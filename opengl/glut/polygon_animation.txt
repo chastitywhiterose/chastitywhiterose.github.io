@@ -1,0 +1,16 @@
+The spinning polygon animation is a rather unique type of animation. This is because when a regular polygon rotates long enough it ends up back at it's original position. This allows for a special type of infinite repeating loop. And surely there is no better image format available for this than an animated gif file.
+
+My programs can create image frames, usually in Windows bmp format. I always store them in a directory/folder named 'o' for output.
+This command can turn the frames into a valid animated gif file.
+
+magick convert -delay 5 -loop 0 o/*.bmp o/0.gif
+
+This command deletes all the bmp frames but leaves the gif file there.
+
+rm o/*.bmp
+
+or to simply erase everything in the o folder
+
+rm o/*
+
+And that's the secret of how I get my spinning polygon animations uploaded websites online. It's also possible to turn them into video files but none of them that I know of have the same infinite repeating ability that gif does. That's why it's still one of my favorite formats. It cannot do more than 256 colors but most of the time I am using only 2: black and white.
