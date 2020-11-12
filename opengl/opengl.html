@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chastity's Home</title>
+
+<style>
+body
+{
+ background-color: black;
+}
+
+h1,p
+{
+ color: white;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>OpenGL code of Chastity White Rose</h1>
+
+<img src="./glut/gif/triangle_720.gif">
+
+<p>
+<a href="https://www.opengl.org/">OpenGL</a> is a cross platform way of doing 2D and even 3D graphics. I started learning it to see what it can help me do. If your browser supports images, you probably saw the spinning triangle at the top of this page. That triangle was made with OpenGL and the purpose of this section of my website is to explain how it was created and how all kinds of polygons can be created using OpenGL and then included in web pages, videos, or even video games if someone has the right skills.
+</p>
+
+<p>
+OpenGL describes a series of functions to describe colors and shapes and where they should be. I specifically use version 2.1 and use this
+<a href="https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/">reference</a>
+when I need to look up a certain function.
+However, OpenGL does not describe how to actually create a window to draw the shapes onto! For this I use the library
+<a href="http://freeglut.sourceforge.net/">freeglut</a>
+because it is used in many tutorials and I found good help available on it.
+</p>
+
+<p>
+The full source code required to make that triangle is available. You can download all 3 of these files.<br>
+<a href="./glut/main.c">main.c</a> <br>
+<a href="./glut/makefile">makefile</a> <br>
+<a href="./glut/polygon_animation.txt">polygon_animation.txt</a> <br>
+</p>
+
+<p>
+To make it work you will need a lot of tools however! A C compiler, a PC with good operating system(preferably Linux), and a method of installing freeglut. This is the unfortunate disadvantage of being a C programmer. Using the tools can be harder than writing the actual code. In the future I intend to write a guide on this topic. But any experienced C programmer who has compiled other things from source can figure it out. For non programmers, all you need to know is that OpenGL is quite capable of doing incredible graphics! I recommend learning the C Programming Language and OpenGL if you are looking to make similar graphics. I have only a very basic understanding of it but my polygons are proof that it works.
+</p>
+
+</body>
+</html>
+
+<!--
+This page is part of my website at
+https://chastitywhiterose.github.io/
+-->
