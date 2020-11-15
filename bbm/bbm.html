@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Binary Bit Map</title>
+
+<style>
+body
+{
+ background-color: black;
+}
+
+h1,p
+{
+ color: white;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>What is Binary Bit Map?</h1>
+
+<p>
+Binary Bit Map is a collection of graphics functions that I wrote which depend only on the C standard library. I have worked on this project for over a year and although it is capable of making many type of animation, there are two challenges that prevent it from currently being usable by people other than me. First, the code is massive. 189 kilobytes as of this writing. Second, the method of producing graphics involves my own routines of memory management and file output. This takes a lot more code than using opengl but has the advantage of producing things without learning to add various linker flags and learn the apis of sdl,allegro,sfml,freeglut,glfw or anything else. There is no window creation nor toolkits downloaded from any website. Only a C compiler with a working standard C library is required.
+<br><br>
+The story of how I started writing it is hilarious. I wasn't smart enough at the time to learn how to use the other APIs for graphics or windowing libraries but I WAS smart enough to write files in binary mode with the very specific bytes at the right addresses to create windows bmp files as well as the netpbm formats known as pbm, pgm, and ppm. This allowed me to produce things in my own way which works well when the intention is to create image files and then view them in image viewers or upload them to websites. Additionally there was HEAVY use of external command line tools like imagemagick, graphicsmagick, and ffmpeg.
+</p>
+
+<img src="checker_rainbow_waves.gif">
+
+<p>
+Originally it was intended only for black and white images but it's capable of so much more than that. I even have functions specifically for creating color palettes.
+</p>
+
+<p>
+Anyone may download my entire
+<a href="./bbm.tar.gz">source archive</a>
+and take a look at the various files. If you are a fairly experienced programmer you can probably figure out the method behind how it works. I also hope to write a basic guide on at least the most important parts of it.
+</p>
+
+<p>
+I can also take some requests of what types of animations someone might like me to make for them. If it is within my skills and involves checkerboards and regular polygons I can sort through my code and find the functions that do the correct things and put them all into a single source file. Or perhaps you just want a gif animation or still image already made that you can use for something without even needing to mess with my code.
+</p>
+
+<p>
+I have also made a few videos using my BBM library that are uploaded to my <a href="https://www.youtube.com/c/chandlerisaacklebs">YouTube</a> channel.
+<br>
+<iframe width="1280" height="720" src="https://www.youtube.com/embed/tA5PGdZ_ZRQ">
+</iframe>
+</p>
+
+</body>
+</html>
+
+<!--
+This page is part of my website at
+https://chastitywhiterose.github.io/
+-->
