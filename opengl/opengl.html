@@ -24,6 +24,7 @@ when I need to look up a certain function.
 However, OpenGL does not describe how to actually create a window to draw the shapes onto! For this I use the library
 <a href="http://freeglut.sourceforge.net/">freeglut</a>
 because it is used in many tutorials and I found good help available on it.
+Neither freeglut nor opengl have a built in way of saving image files so that part is my own invention modified from my other project <a href="../bbm/bbm.html">Binary Bit Map</a>.
 </p>
 
 <p>
@@ -35,6 +36,24 @@ The full source code required to make that triangle is available. You can downlo
 
 <p>
 To make it work you will need a lot of tools however! A C compiler, a PC with good operating system(preferably Linux), and a method of installing freeglut. This is the unfortunate disadvantage of being a C programmer. Using the tools can be harder than writing the actual code. In the future I intend to write a guide on this topic. But any experienced C programmer who has compiled other things from source can figure it out. For non programmers, all you need to know is that OpenGL is quite capable of doing incredible graphics! I recommend learning the C Programming Language and OpenGL if you are looking to make similar graphics. I have only a very basic understanding of it but my polygons are proof that it works.
+</p>
+
+
+
+<p>
+Aside from freeglut, I have also had success with
+<a href="https://www.glfw.org/">glfw</a>.
+It works a little differently in that it does not require a display callback and also that the programmer has to know better how to control the timing of it because it doesn't have the timed callback functions and I use functions which get the time and loop until the right amount has passed.
+<br>
+But no matter what, the same exact OpenGL code is available whether freeglut or glfw once the context is set up. Therefore the following pentagram was made using the exact same code that saves image files as was used for the triangle.
+</p>
+
+<img src="./glfw/gif/pentagram_720.gif">
+
+<p>
+The full source code required to make the above pentagram is also available. You can download these 2 files.<br>
+<a href="./glfw/main.c">main.c</a> <br>
+<a href="./glfw/makefile">makefile</a> <br>
 </p>
 
 </body>
