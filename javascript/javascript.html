@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chastity's Canvas</title>
+<link rel="stylesheet" href="../chastity.css">
+<script src="bbmlib.js"></script>
+</head>
+<body>
+
+<h1>JavaScript</h1>
+
+<canvas id="myCanvas" width="720" height="720">
+Your browser does not support the HTML canvas tag.
+</canvas>
+
+<script>
+var cvs = document.getElementById("myCanvas");
+var ctx = cvs.getContext("2d");
+var fps=60;
+var width=cvs.width;
+var height=cvs.height;
+var polygon_cx=width/2;
+var polygon_cy=height/2;
+var polygon_sides=6;
+var polygon_step=2;
+var polygon_radius=height/2;
+var polygon_radians=0;
+var polygon_radians_step=Math.PI/180;
+
+var polygon_xpoints=new Array();
+var polygon_ypoints=new Array();
+
+var polygon_color="#FFFFFF";
+
+var hue=0;
+
+function main()
+{
+ ctx.fillStyle="#000000";
+ ctx.fillRect(0,0,width,height);
+ //ctx.fillStyle=polygon_color;
+ ctx.fillStyle="hsl("+hue+",100%,50%)"; hue++;
+ bbm_star();
+ polygon_radians+=polygon_radians_step;
+}
+
+var timer=setInterval(main,1000/fps);
+//main();
+
+</script>
+
+<p>
+JavaScript is the programming language used by web browsers. It's very different than C but the syntax is close enough that most of my graphics routines can be translated without too much trouble. After the HTML5 canvas element was created, JavaScript can be used to draw things to the canvas element in a somewhat similar way as OpenGL allows me to draw to a window. However there are some key differences between using C with OpenGL and JavaScript with Canvas.</p>
+
+<p>
+ JavaScript+Canvas runs directly in a web browser. This means that no external image files are created nor are there source files that you have to download and figure out how to compile. This makes it a LOT faster for showing cool examples on my website. But the downside is that the animations cannot be downloaded as gif files or viewed outside of a modern web browser like Google Chrome or Firefox.
+</p>
+
+<p>
+C with OpenGL is a lot harder to use and requires experience with C, OpenGL, and a window toolkit like freeglut or glfw. However, it allows for the creation of things that run outside of web browsers by creating frames for animated gif or video files. Therefore there are a lot of reasons why JavaScript can never completely replace C especially if the goal is to display things directly to a window on a standard desktop operating system.
+</p>
+
+<p>
+Most of the JavaScript I know was learned from this
+<a href="https://www.w3schools.com/js/default.asp">tutorial</a>.
+However, the best examples of how to use it come from the
+<a href="https://www.w3schools.com/html/html5_canvas.asp">canvas</a>  section of the HTML tutorial.
+</p>
+
+<p>
+You can view the source code of this page with your web browser. One thing you may notice is that some of the code is in this page but some of it is in
+<a href="bbmlib.js">bbmlib.js</a>. This is so that these precious functions can be used in multiple web pages when I need to.
+</p>
+
+</body>
+</html>
+
+<!--
+This page is part of my website at
+https://chastitywhiterose.github.io/
+-->
