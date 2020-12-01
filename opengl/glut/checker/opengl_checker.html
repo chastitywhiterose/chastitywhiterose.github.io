@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chastity's OpenGL Checkerboards</title>
+
+<link rel="stylesheet" href="../../../chastity.css">
+
+</head>
+<body>
+
+<h1>OpenGL Checkerboard code of Chastity White Rose</h1>
+
+<img src="./gif/checker_white_square.gif">
+
+<p>
+When I first started graphics programming. The very first project I did involved drawing a checkerboard. Because it was only squares I found the math to be very easy. For this reason my OpenGL code has had a function that was included in my header files that drew a checkerboard, but it remained unused for any of my modern projects, until now!
+</p>
+
+<p>
+By combining my checkerboard code with my other code that displays a spinning polygon, I created a rather bizarre animation. This one is special because it uses an XOR operation combining two separate images. One is the polygon and the other is the checkerboard. What you see on this page is the result of the two images combined. The image at the top uses the spinning white square and the one below uses the color changing hue square.
+</p>
+
+<img src="./gif/checker_hue_square.gif">
+
+<p>
+And as always, the full source code required to make these gifs is available.
+<br>
+<a href="./main.c">main.c</a> <br>
+<a href="./gl_bbmio.h">gl_bbmio.h</a> <br>
+<a href="./gl_bbm_polygon.h">gl_bbm_polygon.h</a> <br>
+<a href="./gl_bbm_palette.h">gl_bbm_palette.h</a> <br>
+<a href="./makefile">makefile</a> <br>
+</p>
+
+</body>
+</html>
+
+<!--
+This page is part of my website at
+https://chastitywhiterose.github.io/
+-->
