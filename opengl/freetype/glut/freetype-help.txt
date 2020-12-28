@@ -1,0 +1,25 @@
+This file has links and information that were useful to me while learning freetype.
+
+Link to first page of official tutorial.
+https://www.freetype.org/freetype2/docs/tutorial/step1.html
+
+The command to get the required flags to compile and link with.
+
+pkg-config --cflags --libs freetype2
+
+Which at this time returns this on my 2012 PC running Q4OS Linux.
+
+-I/usr/include/freetype2 -I/usr/include/libpng16 -lfreetype
+
+Which is kinda cool because it means it makes use of libpng which I know works with png files.
+
+On my Pinebook Pro it returns even more things.
+
+-I/usr/include/freetype2 -I/usr/include/libpng16 -I/usr/include/harfbuzz -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -lfreetype
+
+The makefile rule I use when compiling a freeglut program with freetype.
+
+linux_freeglut_freetype:
+	gcc -Wall -ansi -pedantic main.c -o main -lOpenGL -lGLU -lglut -lm `pkg-config --cflags --libs freetype2` &&./main
+
+So far I have a working program that can print text to the screen by writing to a pixel array with my own custom routine based on what I learned in the tutorial, but it's very slow. Next I will try ftgl.
