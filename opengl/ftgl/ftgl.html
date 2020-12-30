@@ -2,78 +2,30 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Chastity's OpenGL</title>
+<title>Chastity's OpenGL and FTGL Programming</title>
 
 <link rel="stylesheet" href="../../chastity.css">
 
 </head>
 <body>
 
-<h1>OpenGL code of Chastity White Rose</h1>
-
-<img src="./glut/gif/triangle_720.gif">
+<h1>FTGL OpenGL code of Chastity White Rose</h1>
 
 <p>
-This page will
+This page will be dedicated to animations I made that involve text with the <a href="http://ftgl.sourceforge.net/docs/html/">FTGL</a> library. FTGL is a wrapper around freetype that allows drawing text directly onto an OpenGl context. I will add more information as I find time.
 </p>
 
-<p>
-OpenGL describes a series of functions to describe colors and shapes and where they should be. I specifically use version 2.1 and use this
-<a href="https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/">reference</a>
-when I need to look up a certain function.
-However, OpenGL does not describe how to actually create a window to draw the shapes onto! For this I use the library
-<a href="http://freeglut.sourceforge.net/">freeglut</a>
-because it is used in many tutorials and I found good help available on it.
-Neither freeglut nor opengl have a built in way of saving image files so that part is my own invention modified from my other project <a href="../bbm/bbm.html">Binary Bit Map</a>.
-</p>
+<iframe class="rumble" width="1280" height="720" src="https://rumble.com/embed/v9m3tt/?pub=b4ulv" frameborder="0" allowfullscreen></iframe>
 
 <p>
-The full source code required to make that triangle is available. You can download all 3 of these files.<br>
+FTGL has allowed me to add text where I want in my OpenGL programs. I had similar means of doing graphics with SDL and Allegro but now that I've moved to using OpenGL for all graphics projects I needed a reliable way to make text because OpenGL is only about basic shapes and is fine when drawing a polygon but not simply displaying text to a part of the screen. In fact it's easy to overlook the imporance of text at first, but because I hope of making a video game, I need a way of displaying on the screen some instructions to tell players how to play the game. I'm not sure what kind of game I will make but I do know that I intend to use either FreeGLUT or GLFW as the library for creating a window with an OpenGL context and FTGL for rendering text to that context. At this time I still don't know of a way to load image files and display them on the screen, but that will definitely be something I want to learn before I make whatever game I do. The source code that makes the above animation is available on this page below.
+</p>
 <a href="./glut/main.c">main.c</a> <br>
 <a href="./glut/makefile">makefile</a> <br>
-<a href="./glut/polygon_animation.txt">polygon_animation.txt</a> <br>
-</p>
 
 <p>
-To make it work you will need a lot of tools however! A C compiler, a PC with good operating system(preferably Linux), and a method of installing freeglut. This is the unfortunate disadvantage of being a C programmer. Using the tools can be harder than writing the actual code. In the future I intend to write a guide on this topic. But any experienced C programmer who has compiled other things from source can figure it out. For non programmers, all you need to know is that OpenGL is quite capable of doing incredible graphics! I recommend learning the C Programming Language and OpenGL if you are looking to make similar graphics. I have only a very basic understanding of it but my polygons are proof that it works.
-</p>
-
-
-
-<p>
-Aside from freeglut, I have also had success with
-<a href="https://www.glfw.org/">glfw</a>.
-It works a little differently in that it does not require a display callback and also that the programmer has to know better how to control the timing of it because it doesn't have the timed callback functions and I use functions which get the time and loop until the right amount has passed.
-<br>
-But no matter what, the same exact OpenGL code is available whether freeglut or glfw once the context is set up. Therefore the following pentagram was made using the exact same code that saves image files as was used for the triangle.
-</p>
-
-<img src="./glfw/gif/pentagram_720.gif">
-
-<p>
-The full source code required to make the above pentagram is also available. You can download these 2 files.<br>
-<a href="./glfw/main.c">main.c</a> <br>
-<a href="./glfw/makefile">makefile</a> <br>
-</p>
-
-<img src="./glut/gif/hue_square_720.gif">
-
-<p>
-OpenGL is definitely not limited to only black and white, even though the theme of my site is based on those two colors. For this reason I also made the color changing hue square which you should also see above this paragraph. Like the other examples, I have provided the source. However, notice that this time there are multiple files. I do not always put everything in only the main.c file as in the two above examples.
-</p>
-
-<p>
-<a href="./glut/hue/main.c">main.c</a> <br>
-<a href="./glut/hue/gl_bbmio.h">gl_bbmio.h</a> <br>
-<a href="./glut/hue/gl_bbm_polygon.h">gl_bbm_polygon.h</a> <br>
-<a href="./glut/hue/gl_bbm_palette.h">gl_bbm_palette.h</a> <br>
-<a href="./glut/hue/makefile">makefile</a> <br>
-</p>
-
-<p>
-If you like what you see here. You may want to see the
-<a href="./glut/checker/opengl_checker.html">checkerboard</a>
-examples.
+However, to get the program compiled and running to create the same animation as shown in the video above, you will either need the <a href="https://sourcefoundry.org/hack/">Hack</a> font installed or you will need to change the source code to point to whatever font you would prefer to use.
+The source code and makefile above could prove to be very useful because the main.c file contains everything for drawing the regular polygons and also the way of using FTGL to draw text. As usual the makefile has the right command to compile and link the source. I've tested it on both of my computers running Linux. Windows users may need a different setup.
 </p>
 
 </body>
