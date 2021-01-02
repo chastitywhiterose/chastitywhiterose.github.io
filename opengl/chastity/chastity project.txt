@@ -1,0 +1,43 @@
+This file is an explanation of my new OpenGL programming project that I began on 12/31/2020.
+The current name of the project is just "Chastity" because it's my name and I'll use it until I think of something better. Things can always be changed later. 
+
+I started with copying from previous OpenGL programs I had written. I translated a lot that had previously used freeglut to using glfw instead because glfw allows the code to loop more linear than freeglut did. I had previous code samples to copy from the glfw version of my polygon program. But then I copied the font and text drawing code from my ftgl demo I made previously.
+
+This gave me a working glfw program with text support on top of being able to do anything possible in OpenGL, limited only by my knowledge.
+
+One of the main things I do with all my OpenGL programs is saving frames to files for later encoding into an animated gif or video. However, I was using a function that saved Windows BMP files. Because they are uncompressed and very large, this became an issue because my Pinebook Pro quickly ran out of space during a program designed to create enough frames for an hour. This caused the need to compress them into PNG files.
+
+Below are useful commands for this purpose:
+
+magick convert o/00000000.bmp o/00000000.png
+
+These are helpful guides I use when using ffmpeg to encode videos.
+
+https://trac.ffmpeg.org/wiki/Encode/H.264
+https://trac.ffmpeg.org/wiki/Encode/H.265
+https://trac.ffmpeg.org/wiki/Encode/AV1
+https://trac.ffmpeg.org/wiki/Encode/VP9
+https://trac.ffmpeg.org/wiki/Encode/FFV1
+https://trac.ffmpeg.org/wiki/Encode/YouTube
+https://trac.ffmpeg.org/wiki/Slideshow
+
+
+imagemagick raw conversion commands
+
+To convert a bmp image to raw pixel data.
+
+magick convert ./o/bbm.bmp ./o/bbm.mono
+magick convert ./o/bbm.bmp ./o/bbm.gray
+magick convert ./o/bbm.bmp ./o/bbm.rgb
+
+To convert raw data back to original image. (using example 512x512 size for my test)
+
+magick convert -size 512x512 ./o/bbm.mono ./o/bbm1.bmp
+magick convert -depth 8 -size 512x512 ./o/bbm.gray ./o/bbm2.bmp
+magick convert -depth 8 -size 512x512 ./o/bbm.rgb ./o/bbm3.bmp
+
+Or to PNG format instead.
+
+magick convert -size 512x512 ./o/bbm.mono ./o/bbm1.png
+magick convert -depth 8 -size 512x512 ./o/bbm.gray ./o/bbm2.png
+magick convert -depth 8 -size 512x512 ./o/bbm.rgb ./o/bbm3.png
