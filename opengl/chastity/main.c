@@ -159,34 +159,31 @@ int main(int argc, char **argv)
  /*This allows the XOR operation when drawing the polygon. However it's important to note that in the loop below GL_COLOR_LOGIC_OP is disabled when drawing text but then enabled before drawing the polygon. The text does not draw at all when logical operations are enabled.*/
  glLogicOp(GL_XOR);
  
- 
- framelimit=fps;
-
+ framelimit=fps*60*60;
 
  /* Loop until the user closes the window */
  while(!glfwWindowShouldClose(window))
  {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  
   if(text_switch)
   {
    glDisable(GL_COLOR_LOGIC_OP);
    glRasterPos2i(fontsize,fontsize);
- sprintf(text,"%d",frame_displayed);
- ftglRenderFont(font,text,FTGL_RENDER_ALL);
+   sprintf(text,"%d",frame_displayed);
+   ftglRenderFont(font,text,FTGL_RENDER_ALL);
  
- glRasterPos2i(width-fontsize*5,fontsize);
- sprintf(text,"%d:%02d:%02d",hours,minutes,seconds);
- ftglRenderFont(font,text,FTGL_RENDER_ALL);
+   glRasterPos2i(width-fontsize*5,fontsize);
+   sprintf(text,"%d:%02d:%02d",hours,minutes,seconds);
+   ftglRenderFont(font,text,FTGL_RENDER_ALL);
  
- glRasterPos2i(fontsize,fontsize*3);
- sprintf(text,"%d",polygon_sides);
- ftglRenderFont(font,text,FTGL_RENDER_ALL);
+   glRasterPos2i(fontsize,fontsize*3);
+   sprintf(text,"%d",polygon_sides);
+   ftglRenderFont(font,text,FTGL_RENDER_ALL);
  
- glRasterPos2i(fontsize,fontsize*4);
- sprintf(text,"%d",polygon_step);
- ftglRenderFont(font,text,FTGL_RENDER_ALL);
+   glRasterPos2i(fontsize,fontsize*4);
+   sprintf(text,"%d",polygon_step);
+   ftglRenderFont(font,text,FTGL_RENDER_ALL);
 
 
  glRasterPos2i(width*5/16,fontsize);
@@ -194,10 +191,10 @@ int main(int argc, char **argv)
 
  glRasterPos2i(fontsize*2,height-fontsize);
  ftglRenderFont(font,"An animation by Chastity White Rose!", FTGL_RENDER_ALL);
-
- }
  
  glEnable(GL_COLOR_LOGIC_OP);
+ }
+ 
  polyfunc();
  
  glFlush();
@@ -214,7 +211,7 @@ int main(int argc, char **argv)
  }
  
  /*optionally save frame as file*/
- if(0)
+ if(1)
  {
   gl_bbm_save_frame(); if(frame==framelimit){glfwSetWindowShouldClose(window,GLFW_TRUE);}
  }

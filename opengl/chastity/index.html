@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chastity's OpenGL Programming Project</title>
+
+<link rel="stylesheet" href="../../chastity.css">
+
+</head>
+<body>
+
+<h1>Source of Chastity White Rose OpenGL code</h1>
+
+<p>
+This file is an explanation of my new OpenGL programming project that I began on 12/31/2020.
+The current name of the project is just "Chastity" because it's my name and I'll use it until I think of something better. Things can always be changed later. 
+
+I started with copying from previous OpenGL programs I had written. I translated a lot that had previously used freeglut to using glfw instead because glfw allows the code to loop more linear than freeglut did. I had previous code samples to copy from the glfw version of my polygon program. But then I copied the font and text drawing code from my ftgl demo I made previously.
+
+This gave me a working glfw program with text support on top of being able to do anything possible in OpenGL, limited only by my knowledge.
+
+One of the main things I do with all my OpenGL programs is saving frames to files for later encoding into an animated gif or video. However, I was using a function that saved Windows BMP files. Because they are uncompressed and very large, this became an issue because my Pinebook Pro quickly ran out of space during a program designed to create enough frames for an hour. This caused the need to compress them into PNG files.
+</p>
+
+<p>
+The source files below are meant to serve as a source of header files copied to other projects. That is to say that when you see my main.c source files included in other projects on this site, they were probably copied from here. Consider this the reference implementation of my spinning polygon program with text support. Other libraries may be added to this as well if they prove useful later in game development.
+<p>
+
+<p>
+<a href="main.c">main.c</a> <br>
+<a href="gl_bbmio.h">gl_bbmio.h</a> <br>
+<a href="gl_bbm_polygon.h">gl_bbm_polygon.h</a> <br>
+<a href="gl_bbm_palette.h">gl_bbm_palette.h</a> <br>
+<a href="gl_ftgl.h">gl_ftgl.h</a> <br>
+<a href="./glut/hue/makefile">makefile</a> <br>
+</p>
+
+</body>
+</html>
+
+<!--
+This page is part of my website at
+https://chastitywhiterose.github.io/
+-->
