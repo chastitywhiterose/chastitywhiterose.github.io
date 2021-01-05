@@ -51,3 +51,18 @@ Or to PNG format instead.
 magick convert -size 512x512 ./o/bbm.mono ./o/bbm1.png
 magick convert -depth 8 -size 512x512 ./o/bbm.gray ./o/bbm2.png
 magick convert -depth 8 -size 512x512 ./o/bbm.rgb ./o/bbm3.png
+
+---
+Great commands.
+
+Encode series of files with the defaults decided by ffmpeg.
+
+ffmpeg -framerate 60 -i o/%08d.png video.mp4
+
+Encode the files but with the ffv1 codec based on the wiki page.
+
+ffmpeg -framerate 60 -i o/%08d.png -acodec copy -vcodec ffv1 -level 1 -coder 1 -context 1 -g 1 video.mp4
+
+Encode using the x264 expected by youtube. This usually works.
+
+ffmpeg -framerate 60 -f image2 -i o/%08d.png -vcodec libx264 -preset veryslow -crf 23 -pix_fmt yuv420p video.mp4
