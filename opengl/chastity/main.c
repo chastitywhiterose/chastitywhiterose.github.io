@@ -34,6 +34,7 @@ float polygon_radians_step=PI/180; /*how much the polygon rotates each frame*/
 float polygon_xpoints[0x1000],polygon_ypoints[0x1000];
 
 #include "gl_bbm_polygon.h"
+#include "gl_bbm_polygon_array.h"
 #include "gl_bbm_palette.h"
 
 /*frames per second and other animation variables*/
@@ -44,10 +45,17 @@ int fps=60,framelimit=1,seconds=0,minutes=0,hours=0;
 */
 double glfwseconds,glfwseconds1;
 
+GLFWwindow* window; /*window pointer*/
+int text_switch=1;
+
+/*header for different operating modes*/
+#include "glfw_modes.h"
+
 void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
 {
  if(action==GLFW_PRESS || action==GLFW_REPEAT)
  {
+  
   switch(key)
   {
    /* Exit on escape key press */
@@ -89,11 +97,73 @@ void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
     polyfunc=gl_bbm_polygon3;
    break;
    
+   /*can move the polygon anywhere with keyboard*/
+   case GLFW_KEY_H:
+    polygon_cx-=1;
+   break;
+   case GLFW_KEY_J:
+    polygon_cy+=1;
+   break;
+   case GLFW_KEY_K:
+    polygon_cy-=1;
+   break;
+   case GLFW_KEY_L:
+    polygon_cx+=1;
+   break;
+   
+   /*polygon functions with gl begin/end*/
+   case GLFW_KEY_Q:
+    polyfunc=gl_bbm_polygon;
+   break;
+   case GLFW_KEY_W:
+    polyfunc=gl_bbm_polygon1;
+   break;
+   case GLFW_KEY_E:
+    polyfunc=gl_bbm_polygon2;
+   break;
+   case GLFW_KEY_R:
+    polyfunc=gl_bbm_polygon3;
+   break;
+   case GLFW_KEY_T:
+    polyfunc=gl_bbm_polygon4;
+   break;
+   
+   case GLFW_KEY_A:
+    polyfunc=gl_bbm_polygon_array;
+   break;
+   case GLFW_KEY_S:
+    polyfunc=gl_bbm_polygon_array1;
+   break;
+   case GLFW_KEY_D:
+    polyfunc=gl_bbm_polygon_array2;
+   break;
+   case GLFW_KEY_F:
+    polyfunc=gl_bbm_polygon_array3;
+   break;
+   case GLFW_KEY_G:
+    polyfunc=gl_bbm_polygon_array4;
+   break;
+   
+   case GLFW_KEY_F1:
+    mode_f1();
+   break;
+   case GLFW_KEY_F2:
+    mode_f2();
+   break;
+   
+   /*if in checkerboard mode these change rectangle size*/
+   case GLFW_KEY_N:
+    if(rectsize>1){rectsize-=1;}
+   break;
+   case GLFW_KEY_M:
+    rectsize+=1;
+   break;
+   
   }
  }
 }
 
-int text_switch=1;
+
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 {
  double x,y;
@@ -105,6 +175,10 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
   {
    polygon_cx=x;
    polygon_cy=y;
+  }
+  if(button==GLFW_MOUSE_BUTTON_MIDDLE)
+  {
+   polygon_radius=x+y;
   }
   if(button==GLFW_MOUSE_BUTTON_RIGHT)
   {
@@ -120,6 +194,10 @@ void cursor_position_callback(GLFWwindow *window,double x,double y)
   polygon_cx=x;
   polygon_cy=y;
  }
+ if(glfwGetMouseButton(window,GLFW_MOUSE_BUTTON_MIDDLE)==GLFW_PRESS)
+ {
+  polygon_radius=x+y;
+ }
 }
 
 void error_callback(int error,const char *description)
@@ -127,7 +205,10 @@ void error_callback(int error,const char *description)
  fprintf(stderr,"Error: %s\n",description);
 }
 
-GLFWwindow* window;
+
+
+
+
 int main(int argc, char **argv)
 {
  if(!chastity_ftgl_begin()){return 0;}
@@ -153,99 +234,10 @@ int main(int argc, char **argv)
  glClearColor(0.0,0.0,0.0,1.0); /*color used to clear the window*/
  glColor3f(1.0,1.0,1.0); /*color of the polygon*/
  
- /*set the current polygon function to filled star*/
- polyfunc=gl_bbm_polygon2;
+ /*now that context,fonts,and colors are loaded, can start a program!*/
  
- /*This allows the XOR operation when drawing the polygon. However it's important to note that in the loop below GL_COLOR_LOGIC_OP is disabled when drawing text but then enabled before drawing the polygon. The text does not draw at all when logical operations are enabled.*/
- glLogicOp(GL_XOR);
- 
- framelimit=fps*60*60;
+ mode_f1();
 
- /* Loop until the user closes the window */
- while(!glfwWindowShouldClose(window))
- {
-  glClear(GL_COLOR_BUFFER_BIT);
-
-  if(text_switch)
-  {
-   glDisable(GL_COLOR_LOGIC_OP);
-   glRasterPos2i(fontsize,fontsize);
-   sprintf(text,"%d",frame_displayed);
-   ftglRenderFont(font,text,FTGL_RENDER_ALL);
- 
-   glRasterPos2i(width-fontsize*5,fontsize);
-   sprintf(text,"%d:%02d:%02d",hours,minutes,seconds);
-   ftglRenderFont(font,text,FTGL_RENDER_ALL);
- 
-   glRasterPos2i(fontsize,fontsize*3);
-   sprintf(text,"%d",polygon_sides);
-   ftglRenderFont(font,text,FTGL_RENDER_ALL);
- 
-   glRasterPos2i(fontsize,fontsize*4);
-   sprintf(text,"%d",polygon_step);
-   ftglRenderFont(font,text,FTGL_RENDER_ALL);
-
-
- glRasterPos2i(width*5/16,fontsize);
- ftglRenderFont(font,"OpenGL Polygons",FTGL_RENDER_ALL);
-
- glRasterPos2i(fontsize*2,height-fontsize);
- ftglRenderFont(font,"An animation by Chastity White Rose!", FTGL_RENDER_ALL);
- 
- glEnable(GL_COLOR_LOGIC_OP);
- }
- 
- polyfunc();
- 
- glFlush();
-  
- frame_displayed++; 
- if(frame_displayed%fps==0)
- {
-  seconds++;
-  if(seconds%60==0)
-  {
-   minutes++;seconds=0;
-   if(minutes%60==0){hours++;minutes=0;}
-  }
- }
- 
- /*optionally save frame as file*/
- if(1)
- {
-  gl_bbm_save_frame(); if(frame==framelimit){glfwSetWindowShouldClose(window,GLFW_TRUE);}
- }
- 
-  if(frame_displayed%360==0)
- {
-  /*
-   This section increments the step of the star polygon. If the step would result in an invalid star polygon being drawn, the step is reset to 1 and the number of points incremented. The genius of this is that it will cycle through every possible regular polygon both convex and star!
-  */
-  polygon_step+=1;
-  if(polygon_step>=(polygon_sides/2)+polygon_sides%2)
-  {
-   polygon_sides+=1;
-   polygon_step=1;
-  }
- }
- 
-  
-  polygon_radians+=PI/180;
-  
-  /*check for keypresses or other events*/
-  glfwPollEvents();
- 
-  /*
-  glfwseconds=glfwGetTime();
-  glfwseconds1=glfwseconds+1.0/fps;
-  while(glfwseconds<glfwseconds1)
-  {
-   glfwseconds=glfwGetTime();
-  }
-  */
-  
- }
- 
  
 
  glfwTerminate();

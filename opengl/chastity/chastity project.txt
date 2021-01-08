@@ -61,7 +61,7 @@ ffmpeg -framerate 60 -i o/%08d.png video.mp4
 
 Encode the files but with the ffv1 codec based on the wiki page.
 
-ffmpeg -framerate 60 -i o/%08d.png -acodec copy -vcodec ffv1 -level 1 -coder 1 -context 1 -g 1 video.mp4
+ffmpeg -framerate 60 -i o/%08d.png -acodec copy -vcodec ffv1 -level 1 -coder 1 -context 1 -g 1 video.mkv
 
 Encode using the x264 expected by youtube. This usually works.
 
