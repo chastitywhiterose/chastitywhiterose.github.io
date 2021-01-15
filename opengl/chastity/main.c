@@ -150,6 +150,9 @@ void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
    case GLFW_KEY_F2:
     mode_f2();
    break;
+   case GLFW_KEY_F3:
+    mode_f3();
+   break;
    
    /*if in checkerboard mode these change rectangle size*/
    case GLFW_KEY_N:
@@ -232,7 +235,7 @@ int main(int argc, char **argv)
 
  glOrtho(0.0,width,height,0.0,-1.0,1.0); /*2D orthographic matrix*/
  glClearColor(0.0,0.0,0.0,1.0); /*color used to clear the window*/
- glColor3f(1.0,1.0,1.0); /*color of the polygon*/
+
  
  /*now that context,fonts,and colors are loaded, can start a program!*/
  

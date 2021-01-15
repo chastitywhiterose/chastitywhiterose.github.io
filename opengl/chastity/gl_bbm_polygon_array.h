@@ -39,6 +39,23 @@ void gl_bbm_polygon_array()
  glDrawArrays(GL_POLYGON,0,polygon_sides);
 }
 
+/*
+ just for the sake of example, 3 colors in one triangle
+ Only works if polygon_sides is 3.
+ This one uses glDrawArrays instead of traditional glBegin/glEnd
+*/
+
+GLfloat tri_rgb_array[]={1,0,0, 0,1,0, 0,0,1};
+GLfloat tri_ycm_array[]={1,1,0, 0,1,1, 1,0,1};
+void gl_regular_triangle_array()
+{
+ glEnableClientState(GL_COLOR_ARRAY);
+ glColorPointer(3,GL_FLOAT,0,tri_rgb_array);
+ get_polygon_points_array();
+ glDrawArrays(GL_POLYGON,0,polygon_sides);
+}
+
+
 /*using same array,only the lines are drawn. The polygon is not filled.*/
 void gl_bbm_polygon_array1()
 {

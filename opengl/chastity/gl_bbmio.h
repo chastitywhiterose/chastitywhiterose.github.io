@@ -402,12 +402,12 @@ void gl_bbm_save_frame()
   This next optional section converts to PNG with ImageMagick.
   Depending on which colorspace is selected, it can make a difference in file size.
  */
- if(1)
+ if(0)
  {
   sprintf(framefilename1,"o/%08d.png",frame);
 /*  sprintf(command,"magick convert %s -monochrome %s",framefilename,framefilename1);*/
-  sprintf(command,"magick convert %s -colorspace lineargray %s",framefilename,framefilename1);
-/*  sprintf(command,"magick convert %s -colorspace rgb %s",framefilename,framefilename1);*/
+/*  sprintf(command,"magick convert %s -colorspace lineargray %s",framefilename,framefilename1);*/
+  sprintf(command,"magick convert %s -colorspace rgb %s",framefilename,framefilename1);
 
   system(command);
   if( remove( framefilename ) != 0 ){printf("could not delete file %s\n",framefilename);}

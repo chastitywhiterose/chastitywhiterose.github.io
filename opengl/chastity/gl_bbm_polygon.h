@@ -45,6 +45,24 @@ void gl_bbm_polygon()
  glEnd();
 }
 
+
+/*
+ just for the sake of example, 3 colors in one triangle
+ Only works if polygon_sides is 3.
+*/
+void gl_regular_triangle()
+{
+ poly_points_func();
+ glBegin(GL_POLYGON);
+ glColor3f(1.0,0.0,0.0);
+ glVertex2f(polygon_xpoints[0],polygon_ypoints[0]);
+ glColor3f(0.0,1.0,0.0);
+ glVertex2f(polygon_xpoints[1],polygon_ypoints[1]);
+ glColor3f(0.0,0.0,1.0);
+ glVertex2f(polygon_xpoints[2],polygon_ypoints[2]);
+ glEnd();
+}
+
 /*
 I finally learned how to use a function pointer!
 This function pointer allows me to change which function is currently being called each frame by various keypresses while the program is running. It defaults to the filled polygon function above but can be changed to anything else!

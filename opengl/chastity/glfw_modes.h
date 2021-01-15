@@ -19,6 +19,7 @@ void mode_f1()
  
  framelimit=fps*60*60;
 
+  glColor3f(1.0,1.0,1.0); /*color of the polygon*/
  
   /* Loop until the user closes the window */
  while(!glfwWindowShouldClose(window))
@@ -129,12 +130,14 @@ void mode_f2()
 
  glEnable(GL_COLOR_LOGIC_OP);
  
+  glColor3f(1.0,1.0,1.0); /*color of the polygon*/
+ 
   /* Loop until the user closes the window */
  while(!glfwWindowShouldClose(window))
  {
   glClear(GL_COLOR_BUFFER_BIT);
 
- gl_bbm_checker();
+ /*gl_bbm_checker();*/
  polyfunc();
  
  glFlush();
@@ -146,23 +149,87 @@ void mode_f2()
   gl_bbm_save_frame(); if(frame==framelimit){glfwSetWindowShouldClose(window,GLFW_TRUE);}
  }
  
+ 
+ /*
+  This section increments the step of the star polygon. If the step would result in an invalid star polygon being drawn, the step is reset to 1 and the number of points incremented. The genius of this is that it will cycle through every possible regular polygon both convex and star!
+ */
+ 
+ /*
  frame_displayed++;
  if(frame_displayed%360==0)
  {
-  /*
-   This section increments the step of the star polygon. If the step would result in an invalid star polygon being drawn, the step is reset to 1 and the number of points incremented. The genius of this is that it will cycle through every possible regular polygon both convex and star!
-  */
-  
+
   polygon_step+=1;
   if(polygon_step>=(polygon_sides/2)+polygon_sides%2)
   {
    polygon_sides+=1;
    polygon_step=1;
   }
-
  }
+ */
  
   
+  polygon_radians+=PI/180;
+  
+  /*check for keypresses or other events*/
+  glfwPollEvents();
+ 
+  /*
+  glfwseconds=glfwGetTime();
+  glfwseconds1=glfwseconds+1.0/fps;
+  while(glfwseconds<glfwseconds1)
+  {
+   glfwseconds=glfwGetTime();
+  }
+  */
+  
+ }
+ 
+}
+
+
+
+void mode_f3()
+{
+ rectsize=80;
+ /*set size and position of polygon*/
+ polygon_cx=width/2;
+ polygon_cy=height/2;
+ polygon_radius=height/2;
+  /*set the current polygon function to filled star*/
+ polyfunc=gl_bbm_polygon2;
+ 
+ /*This allows the XOR operation when drawing the polygon. However it's important to note that in the loop below GL_COLOR_LOGIC_OP is disabled when drawing text but then enabled before drawing the polygon. The text does not draw at all when logical operations are enabled.*/
+ glLogicOp(GL_XOR);
+ 
+ glEnable(GL_COLOR_LOGIC_OP);
+ 
+ polygon_sides=3;
+ 
+ framelimit=fps*60;
+ 
+  /* Loop until the user closes the window */
+ while(!glfwWindowShouldClose(window))
+ {
+  glClear(GL_COLOR_BUFFER_BIT);
+
+ /*gl_bbm_checker();*/
+ /*polyfunc();*/
+ 
+ /*gl_regular_triangle();*/
+ gl_regular_triangle_array();
+ 
+ glFlush();
+  
+
+ /*optionally save frame as file*/
+ if(0)
+ {
+  gl_bbm_save_frame(); if(frame==framelimit){glfwSetWindowShouldClose(window,GLFW_TRUE);}
+ }
+ 
+ frame_displayed++;
+
   polygon_radians+=PI/180;
   
   /*check for keypresses or other events*/
