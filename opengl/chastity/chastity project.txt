@@ -7,6 +7,8 @@ This gave me a working glfw program with text support on top of being able to do
 
 One of the main things I do with all my OpenGL programs is saving frames to files for later encoding into an animated gif or video. However, I was using a function that saved Windows BMP files. Because they are uncompressed and very large, this became an issue because my Pinebook Pro quickly ran out of space during a program designed to create enough frames for an hour. This caused the need to compress them into PNG files.
 
+So the rest of this file is concerned with the commands I use to manipulate the image files after they are created by my programs.
+
 ImageMagick is totally capable of converting to PNG with several types of output. Below are useful commands for this purpose:
 
 To convert while preserving all colors from original.
@@ -34,6 +36,8 @@ https://trac.ffmpeg.org/wiki/Slideshow
 
 imagemagick raw conversion commands
 
+These commands could prove useful if I need pixel data in a certain format to read into my OpenGL programs in the future.
+
 To convert a bmp image to raw pixel data.
 
 magick convert ./o/bbm.bmp ./o/bbm.mono
@@ -53,7 +57,9 @@ magick convert -depth 8 -size 512x512 ./o/bbm.gray ./o/bbm2.png
 magick convert -depth 8 -size 512x512 ./o/bbm.rgb ./o/bbm3.png
 
 ---
-Great commands.
+PNG to video commands.
+
+The command examples here show turning PNG files into video files. However it works with any file type that ffmpeg supports so it works fine with BMP or PNG equally and those are the only formats I bother with.
 
 Encode series of files with the defaults decided by ffmpeg.
 
@@ -66,3 +72,19 @@ ffmpeg -framerate 60 -i o/%08d.png -acodec copy -vcodec ffv1 -level 1 -coder 1 -
 Encode using the x264 expected by youtube. This usually works.
 
 ffmpeg -framerate 60 -f image2 -i o/%08d.png -vcodec libx264 -preset veryslow -crf 23 -pix_fmt yuv420p video.mp4
+
+BMP to gif commands
+
+There are other times when I have only a few hundred frames for the intention of making an infinite gif loop. Usually I keep the temporary frames as BMP files in this case because there are so few that space is an issue.
+
+This command can turn the frames into a valid animated gif file.
+
+magick convert -delay 5 -loop 0 o/*.bmp o/0.gif
+
+This command deletes all the bmp frames but leaves the gif file there.
+
+rm o/*.bmp
+
+or to simply erase everything in the o folder
+
+rm o/*

@@ -221,13 +221,15 @@ int main(int argc, char **argv)
  glfwSetErrorCallback(error_callback);
  
  if(!glfwInit()){return 1;} /*Initialize GLFW*/
+  
+
 
  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,2); /*Using version 2.1 of OpenGL*/
  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,1);
  glfwWindowHint(GLFW_DOUBLEBUFFER,GLFW_FALSE); /*single buffered window*/
  window=glfwCreateWindow(width,height,"Chastity's OpenGL Spinning Polygon using GLFW",NULL,NULL);
  if(!window){glfwTerminate();return 1;}
-
+ 
  glfwMakeContextCurrent(window);
  glfwSetKeyCallback(window,key_callback);
  glfwSetMouseButtonCallback(window,mouse_button_callback);
@@ -235,6 +237,8 @@ int main(int argc, char **argv)
 
  glOrtho(0.0,width,height,0.0,-1.0,1.0); /*2D orthographic matrix*/
  glClearColor(0.0,0.0,0.0,1.0); /*color used to clear the window*/
+ 
+ printf("The OpenGL version is: %s\n",glGetString(GL_VERSION));
 
  
  /*now that context,fonts,and colors are loaded, can start a program!*/

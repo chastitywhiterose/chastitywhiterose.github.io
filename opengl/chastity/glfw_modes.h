@@ -111,7 +111,7 @@ void mode_f1()
 }
 
 /*
-This is checkerboard mode. It draws a checkerboard before the polygon every frame but no text.
+This is polygon only mode. It may draw a checkerboard before the polygon every frame or not depending on if I change the source.
 */
 void mode_f2()
 {
@@ -188,7 +188,9 @@ void mode_f2()
 }
 
 
-
+/*
+ This mode is only for the purpose of showing a 3 colored triangle. It's not something I often do but it is possible and commonly used as an example program in tutorials. So I made some functions only for that purpose specifically only to work with a triangle.
+*/
 void mode_f3()
 {
  rectsize=80;
@@ -206,7 +208,7 @@ void mode_f3()
  
  polygon_sides=3;
  
- framelimit=fps*60;
+ framelimit=fps*30;
  
   /* Loop until the user closes the window */
  while(!glfwWindowShouldClose(window))
