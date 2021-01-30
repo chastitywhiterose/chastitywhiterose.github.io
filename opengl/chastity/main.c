@@ -215,6 +215,7 @@ void error_callback(int error,const char *description)
 int main(int argc, char **argv)
 {
  if(!chastity_ftgl_begin()){return 0;}
+ ftglSetFontFaceSize(font,fontsize,0);
 
  printf("Chastity White Rose\nSpinning Polygon\n");
  
