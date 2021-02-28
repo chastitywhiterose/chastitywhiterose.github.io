@@ -1,0 +1,1 @@
+This project is my modern OpenGL experiment using GLEW as the extension loader. So far I have not seen any advantages to modern OpenGL using all these shaders and vertex buffers and arrays. I have been trying to learn it anyway just in case it turns out that I like it. I still prefer the fixed function pipeline though.
