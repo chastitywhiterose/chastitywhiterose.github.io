@@ -38,6 +38,9 @@ void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
    case GLFW_KEY_W:
     polyfunc=gl_polygon1;
    break;
+   case GLFW_KEY_A:
+    polyfunc=gl_polygon2;
+   break;
   }
  }
 }

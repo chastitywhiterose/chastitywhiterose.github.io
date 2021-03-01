@@ -123,19 +123,19 @@ void get_polygon_points_array_star_rgb()
   polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;
-  polygon_vertex_array[ai]=0; ai++;
+  polygon_vertex_array[ai]=1; ai++;
 
   angle=2*PI*i1/polygon_sides+polygon_radians; 
   polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
   polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
-  polygon_vertex_array[ai]=0; ai++;
+  polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;
   
   polygon_vertex_array[ai]=polygon_cx/width-0.5; ai++;
   polygon_vertex_array[ai]=polygon_cy/height-0.5; ai++;
   polygon_vertex_array[ai]=0; ai++;
-  polygon_vertex_array[ai]=0; ai++;
+  polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=1; ai++;
   i++;
  }
