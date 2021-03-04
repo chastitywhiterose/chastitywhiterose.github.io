@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -21,62 +22,14 @@ float color_r=1,color_g=1,color_b=1;
 
 #include "gl_bbm_polygon_core.h"
 
+
+int polygon_change=0; /*whether polygon automatically changes over time*/
+
 int frame=0;
 
-void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
-{
- if(action==GLFW_PRESS || action==GLFW_REPEAT)
- {
-  switch(key)
-  {
-   case GLFW_KEY_ESCAPE:
-    glfwSetWindowShouldClose(window,GLFW_TRUE);
-   break;
-   case GLFW_KEY_Q:
-    polyfunc=gl_polygon;
-   break;
-   case GLFW_KEY_W:
-    polyfunc=gl_polygon1;
-   break;
-   case GLFW_KEY_A:
-    polyfunc=gl_polygon2;
-   break;
-  }
- }
-}
+#include "callbacks.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int newwidth, int newheight)
-{
- /*make sure the viewport matches the new window dimensions; note that width and 
-  height will be significantly larger than specified on retina displays.*/
- width=newwidth;
- height=newheight;
- glViewport(0, 0, width, height);
-polygon_cx=width/2;
-polygon_cy=height/2;
-if(height<width){polygon_radius=height/3;}
-else{polygon_radius=width/3;}
-}
-
-const char *vertexShaderSource = "#version 330 core\n"
-"in vec2 position;\n"
-"in vec3 color;\n"
-"out vec3 Color;\n"
-"void main()\n"
-"{\n"
- "Color=color;\n"
-"gl_Position=vec4(position,0.0,1.0);\n"
-"}\0";
-
-const char *fragmentShaderSource = "#version 330 core\n"
-"in vec3 Color;\n"
-"out vec4 outColor;\n"
-"void main()\n"
-"{\n"
-"outColor=vec4(Color,1.0);\n"
-"}\n\0";
-
-/*variables defined separate from code for C90 purposes*/
+/*other variables defined separate from code for C90 purposes*/
  GLFWwindow* window;
  unsigned int vertexShader;
  unsigned int fragmentShader;
@@ -86,6 +39,8 @@ const char *fragmentShaderSource = "#version 330 core\n"
  GLint colAttrib;
  int success;
  char infoLog[512];
+
+#include "shaders.h"
 
 int main()
 {
@@ -106,58 +61,26 @@ int main()
 
  glfwMakeContextCurrent(window);
 
-
 glewExperimental=1;
 if (glewInit() != GLEW_OK) {
     fprintf(stderr, "Failed to initialize GLEW\n");
     return -1;
 }
 
+ /*set up the callback functions for user input*/
  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);    
  glfwSetKeyCallback(window,key_callback);
+ glfwSetMouseButtonCallback(window,mouse_button_callback);
+ glfwSetCursorPosCallback(window, cursor_position_callback);
 
  printf("The OpenGL version is: %s\n",glGetString(GL_VERSION));
 
-vertexShader = glCreateShader(GL_VERTEX_SHADER);
- glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
- glCompileShader(vertexShader);
-
-
-
- glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
- if (!success)
- {
-  glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-  printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n%s\n",infoLog);
- }
-fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
- glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
- glCompileShader(fragmentShader);
-
- glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
- if (!success)
- {
-  glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-  printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n%s\n",infoLog);
- }
- 
-shaderProgram = glCreateProgram();
- glAttachShader(shaderProgram, vertexShader);
- glAttachShader(shaderProgram, fragmentShader);
- glLinkProgram(shaderProgram);
-
- glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
- if(!success)
- {
-  glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-  printf("ERROR::SHADER::PROGRAM::LINKING_FAILED\n%s\n",infoLog);
- }
- glDeleteShader(vertexShader);
- glDeleteShader(fragmentShader);
+ make_shaders();
 
  glGenVertexArrays(1, &VAO);
  glGenBuffers(1, &VBO);
  glBindVertexArray(VAO);
+
 
  glBindBuffer(GL_ARRAY_BUFFER, VBO);
  
@@ -186,8 +109,8 @@ shaderProgram = glCreateProgram();
  {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  /*polyfunc();*/
-  gl_polygon2();
+  polyfunc();
+
   
   polygon_radians+=PI/180;
 
@@ -198,16 +121,17 @@ shaderProgram = glCreateProgram();
    This section increments the step of the star polygon. If the step would result in an invalid star polygon being drawn, the step is reset to 1 and the number of points incremented. The genius of   this is that it will cycle through every possible regular polygon both convex and star!
   */
   
+ if(polygon_change)
+ {
   polygon_step+=1;
   if(polygon_step>=(polygon_sides/2)+polygon_sides%2)
   {
    polygon_sides+=1;
    polygon_step=1;
   }
-
+}
  }
  
-
   glfwSwapBuffers(window);
   glfwPollEvents();
  }

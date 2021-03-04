@@ -67,12 +67,6 @@ void gl_polygon1()
 }
 
 /*
-I finally learned how to use a function pointer!
-This function pointer allows me to change which function is currently being called each frame by various keypresses while the program is running. It defaults to the filled polygon function above but can be changed to anything else!
-*/
-void (*polyfunc)()=gl_polygon;
-
-/*
  Drawing a filled star polygon is actually a lot more work than you might expect.
  This is a modified form of my points getting function that fills up an array with enough points for multiple triangles.
  The center x and y of the polygon are used as a corner of each triangle as well as two of the corners based on the step variable.
@@ -109,6 +103,7 @@ void get_polygon_points_array_star()
  }
 }
 
+/*same but use red,green,blue for the 3 corners of each triangle*/
 void get_polygon_points_array_star_rgb()
 {
  double angle;
@@ -123,31 +118,65 @@ void get_polygon_points_array_star_rgb()
   polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;
-  polygon_vertex_array[ai]=1; ai++;
+  polygon_vertex_array[ai]=0; ai++;
 
   angle=2*PI*i1/polygon_sides+polygon_radians; 
   polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
   polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
-  polygon_vertex_array[ai]=1; ai++;
+  polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;
   
   polygon_vertex_array[ai]=polygon_cx/width-0.5; ai++;
   polygon_vertex_array[ai]=polygon_cy/height-0.5; ai++;
   polygon_vertex_array[ai]=0; ai++;
-  polygon_vertex_array[ai]=1; ai++;
+  polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=1; ai++;
   i++;
  }
 }
 
+/*same but use cyan,magenta,yellow for the 3 corners of each triangle*/
+void get_polygon_points_array_star_cmy()
+{
+ double angle;
+ int i=0,i1=0,ai=0;
+
+ while(i<polygon_sides)
+ {
+  i1=(i+polygon_step)%polygon_sides;
+
+  angle=2*PI*i/polygon_sides+polygon_radians; 
+  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
+  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+  polygon_vertex_array[ai]=0; ai++;
+  polygon_vertex_array[ai]=1; ai++;
+  polygon_vertex_array[ai]=1; ai++;
+
+  angle=2*PI*i1/polygon_sides+polygon_radians; 
+  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
+  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+  polygon_vertex_array[ai]=1; ai++;
+  polygon_vertex_array[ai]=0; ai++;
+  polygon_vertex_array[ai]=1; ai++;
+  
+  polygon_vertex_array[ai]=polygon_cx/width-0.5; ai++;
+  polygon_vertex_array[ai]=polygon_cy/height-0.5; ai++;
+  polygon_vertex_array[ai]=1; ai++;
+  polygon_vertex_array[ai]=1; ai++;
+  polygon_vertex_array[ai]=0; ai++;
+  i++;
+ }
+}
+
+void (*get_polygon_points_array_star_func)()=get_polygon_points_array_star;
 
 /*
 filled star polygon. Uses the setup function above.
 */
 void gl_polygon2()
 {
- get_polygon_points_array_star_rgb();
+ get_polygon_points_array_star_func();
  glBufferData(GL_ARRAY_BUFFER, sizeof(polygon_vertex_array), polygon_vertex_array, GL_DYNAMIC_DRAW);
  glDrawArrays(GL_TRIANGLES,0,polygon_sides*3);
 }
@@ -161,3 +190,9 @@ void gl_polygon3()
  glBufferData(GL_ARRAY_BUFFER, sizeof(polygon_vertex_array), polygon_vertex_array, GL_DYNAMIC_DRAW);
  glDrawArrays(GL_LINE_LOOP,0,polygon_sides*3);
 }
+
+/*
+I finally learned how to use a function pointer!
+This function pointer allows me to change which function is currently being called each frame by various keypresses while the program is running. It defaults to the filled polygon function above but can be changed to anything else!
+*/
+void (*polyfunc)()=gl_polygon2;
