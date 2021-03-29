@@ -196,6 +196,64 @@ void get_polygon_points_array_star_cmy()
  }
 }
 
+/*variables to control each color vertex of trangles*/
+float tri_color_r0=1,tri_color_g0=0,tri_color_b0=0;
+float tri_color_r1=1,tri_color_g1=1,tri_color_b1=0;
+float tri_color_r2=1,tri_color_g2=0,tri_color_b2=1;
+
+
+/*colors are based off of variables above*/
+void get_polygon_points_array_star_tri_color()
+{
+ double angle;
+ float cx_norm,cy_norm;
+ int i=0,i1=0,ai=0;
+
+ cx_norm=gl_chastity_ortho_x(polygon_cx);
+ cy_norm=gl_chastity_ortho_y(polygon_cy);
+
+ while(i<polygon_sides)
+ {
+  i1=(i+polygon_step)%polygon_sides;
+
+  angle=2*PI*i/polygon_sides+polygon_radians; 
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
+
+  tri_color_r0=cx_norm+1;
+  tri_color_g0=polygon_vertex_array[ai-1];
+  tri_color_b0=polygon_vertex_array[ai-2];
+
+  polygon_vertex_array[ai]=tri_color_r0; ai++;
+  polygon_vertex_array[ai]=tri_color_g0; ai++;
+  polygon_vertex_array[ai]=tri_color_b0; ai++;
+
+  angle=2*PI*i1/polygon_sides+polygon_radians; 
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
+
+  tri_color_r1=polygon_vertex_array[ai-2];
+  tri_color_g1=polygon_vertex_array[ai-1];
+  tri_color_b1=polygon_vertex_array[ai-6];
+
+  polygon_vertex_array[ai]=tri_color_r1; ai++;
+  polygon_vertex_array[ai]=tri_color_g1; ai++;
+  polygon_vertex_array[ai]=tri_color_b1; ai++;
+
+  tri_color_r2=polygon_vertex_array[ai-2];
+  tri_color_g2=polygon_vertex_array[ai-1];
+  tri_color_b2=polygon_vertex_array[ai-6];
+
+  polygon_vertex_array[ai]=cx_norm; ai++;
+  polygon_vertex_array[ai]=cy_norm; ai++;
+
+  polygon_vertex_array[ai]=tri_color_r2; ai++;
+  polygon_vertex_array[ai]=tri_color_g2; ai++;
+  polygon_vertex_array[ai]=tri_color_b2; ai++;
+  i++;
+ }
+}
+
 void (*get_polygon_points_array_star_func)()=get_polygon_points_array_star;
 
 /*

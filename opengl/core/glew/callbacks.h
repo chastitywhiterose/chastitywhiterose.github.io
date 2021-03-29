@@ -59,6 +59,10 @@ void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
    case GLFW_KEY_D:
     get_polygon_points_array_star_func=get_polygon_points_array_star_cmy;
    break;
+   case GLFW_KEY_F:
+    get_polygon_points_array_star_func=get_polygon_points_array_star_tri_color;
+
+   break;
 
    /*can move the polygon anywhere with keyboard*/
    case GLFW_KEY_H:

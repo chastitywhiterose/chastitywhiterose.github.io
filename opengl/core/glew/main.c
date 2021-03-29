@@ -9,8 +9,8 @@ int width=1280,height=720; /*size of window*/
 #define PI 3.14159265358979323846
 
 /*declare variables for attributes of the polygon*/
-int polygon_sides=5;         /*how many sides and/or corners of polygon*/
-int polygon_step=2;
+int polygon_sides=3;         /*how many sides and/or corners of polygon*/
+int polygon_step=1;
 float polygon_cx;          /*horizontal left/right x coordinate of center*/
 float polygon_cy;         /*vertical up/down y coordinate of center*/
 float polygon_radius;     /*radius or how big the polygon will be*/
@@ -23,7 +23,7 @@ float color_r=1,color_g=1,color_b=1;
 #include "gl_bbm_polygon_core.h"
 
 
-int polygon_change=0; /*whether polygon automatically changes over time*/
+int polygon_change=1; /*whether polygon automatically changes over time*/
 
 int frame=0;
 
@@ -105,7 +105,8 @@ if (glewInit() != GLEW_OK) {
 
  glUseProgram(shaderProgram);
 
-polyfunc=gl_polygon;
+ polyfunc=gl_polygon2;
+ get_polygon_points_array_star_func=get_polygon_points_array_star_tri_color;
 
  while (!glfwWindowShouldClose(window))
  {
