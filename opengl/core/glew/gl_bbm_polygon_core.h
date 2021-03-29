@@ -10,20 +10,39 @@ GLfloat polygon_vertex_array[0x1000];
 
 
 /*
+special functions to convert orthographic coordinates(as used in legacy with glOrtho)
+into normalized coordinates. These depend on the global width and height variables of the window.
+*/
+
+float gl_chastity_ortho_x(float f)
+{
+ f=f/width*2-1;
+ return f;
+}
+
+float gl_chastity_ortho_y(float f)
+{
+ f=f/height*2-1;
+ return -f;
+}
+
+
+
+/*
 The following function creates the coordinates for the polygons but converts them to the normalized coordinates that opengl expects. The original opengl programs assumed an orthographic matrix such that the top left corner was X=0,Y=0 and the bottom right corner was X=width,Y=height. Modern OpenGL doesn't have this luxury since the "glOrtho" function from legacy OpenGL was removed from the API entirely. Instead I am left with the defaults that all coordinates are within the range -1 to 1. This also puts the center of the window as 0,0. This invalidated all my legacy OpenGL code but I came up with a workaround for this. If we divide the orthographic coordinates by the width and height we get the normalized coordinates. But adjusting the center was done but subtracting 0.5 from both X and Y.
 */
 void get_polygon_points_core()
 {
  double angle;
- int i=0,i1=0;
+ int i=0,ai=0;
  while(i<polygon_sides)
  {
   angle=2*PI*i/polygon_sides+polygon_radians; 
-  polygon_vertex_array[i1]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; i1++;
-  polygon_vertex_array[i1]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; i1++;
-  polygon_vertex_array[i1]=color_r; i1++; /*red float*/
-  polygon_vertex_array[i1]=color_g; i1++; /*green float*/
-  polygon_vertex_array[i1]=color_b; i1++; /*blue float*/
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=color_r; ai++; /*red float*/
+  polygon_vertex_array[ai]=color_g; ai++; /*green float*/
+  polygon_vertex_array[ai]=color_b; ai++; /*blue float*/
   i++;
  }
 }
@@ -66,6 +85,8 @@ void gl_polygon1()
  glDrawArrays(GL_LINE_LOOP,0,polygon_sides);
 }
 
+
+
 /*
  Drawing a filled star polygon is actually a lot more work than you might expect.
  This is a modified form of my points getting function that fills up an array with enough points for multiple triangles.
@@ -81,21 +102,25 @@ void get_polygon_points_array_star()
   i1=(i+polygon_step)%polygon_sides;
 
   angle=2*PI*i/polygon_sides+polygon_radians; 
-  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
-  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
+
   polygon_vertex_array[ai]=color_r; ai++;
   polygon_vertex_array[ai]=color_g; ai++;
   polygon_vertex_array[ai]=color_b; ai++;
 
   angle=2*PI*i1/polygon_sides+polygon_radians; 
-  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
-  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
+
   polygon_vertex_array[ai]=color_r; ai++;
   polygon_vertex_array[ai]=color_g; ai++;
   polygon_vertex_array[ai]=color_b; ai++;
-  
-  polygon_vertex_array[ai]=polygon_cx/width-0.5; ai++;
-  polygon_vertex_array[ai]=polygon_cy/height-0.5; ai++;
+
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy); ai++;
+
   polygon_vertex_array[ai]=color_r; ai++;
   polygon_vertex_array[ai]=color_g; ai++;
   polygon_vertex_array[ai]=color_b; ai++;
@@ -114,21 +139,23 @@ void get_polygon_points_array_star_rgb()
   i1=(i+polygon_step)%polygon_sides;
 
   angle=2*PI*i/polygon_sides+polygon_radians; 
-  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
-  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
+
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=0; ai++;
 
   angle=2*PI*i1/polygon_sides+polygon_radians; 
-  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
-  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
   polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;
   
-  polygon_vertex_array[ai]=polygon_cx/width-0.5; ai++;
-  polygon_vertex_array[ai]=polygon_cy/height-0.5; ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy); ai++;
+
   polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=1; ai++;
@@ -147,21 +174,21 @@ void get_polygon_points_array_star_cmy()
   i1=(i+polygon_step)%polygon_sides;
 
   angle=2*PI*i/polygon_sides+polygon_radians; 
-  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
-  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
   polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=1; ai++;
 
   angle=2*PI*i1/polygon_sides+polygon_radians; 
-  polygon_vertex_array[ai]=(polygon_cx+sin(angle)*polygon_radius*2)/width-0.5; ai++;
-  polygon_vertex_array[ai]=(polygon_cy+cos(angle)*polygon_radius*2)/height-0.5; ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;
   polygon_vertex_array[ai]=1; ai++;
   
-  polygon_vertex_array[ai]=polygon_cx/width-0.5; ai++;
-  polygon_vertex_array[ai]=polygon_cy/height-0.5; ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx); ai++;
+  polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy); ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=1; ai++;
   polygon_vertex_array[ai]=0; ai++;

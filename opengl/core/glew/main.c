@@ -9,8 +9,8 @@ int width=1280,height=720; /*size of window*/
 #define PI 3.14159265358979323846
 
 /*declare variables for attributes of the polygon*/
-int polygon_sides=3;         /*how many sides and/or corners of polygon*/
-int polygon_step=1;
+int polygon_sides=5;         /*how many sides and/or corners of polygon*/
+int polygon_step=2;
 float polygon_cx;          /*horizontal left/right x coordinate of center*/
 float polygon_cy;         /*vertical up/down y coordinate of center*/
 float polygon_radius;     /*radius or how big the polygon will be*/
@@ -71,7 +71,7 @@ if (glewInit() != GLEW_OK) {
  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);    
  glfwSetKeyCallback(window,key_callback);
  glfwSetMouseButtonCallback(window,mouse_button_callback);
- glfwSetCursorPosCallback(window, cursor_position_callback);
+ /*glfwSetCursorPosCallback(window, cursor_position_callback);*/
 
  printf("The OpenGL version is: %s\n",glGetString(GL_VERSION));
 
@@ -104,6 +104,8 @@ if (glewInit() != GLEW_OK) {
  polygon_radius=height/2;
 
  glUseProgram(shaderProgram);
+
+polyfunc=gl_polygon;
 
  while (!glfwWindowShouldClose(window))
  {

@@ -86,6 +86,10 @@ void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
  }
 }
 
+
+
+
+/*function called every time a mouse button is pressed*/
 void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 {
  double x,y;
@@ -97,6 +101,13 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
   {
    polygon_cx=x;
    polygon_cy=y;
+/*
+   printf("new x = %f\n",x);
+   printf("new y = %f\n",y);
+
+   printf("new normalized x = %f\n",gl_chastity_ortho_x(x));
+   printf("new normalized y = %f\n",gl_chastity_ortho_y(y));
+*/
   }
   if(button==GLFW_MOUSE_BUTTON_MIDDLE)
   {
