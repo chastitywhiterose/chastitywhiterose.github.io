@@ -71,7 +71,7 @@ if (glewInit() != GLEW_OK) {
  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);    
  glfwSetKeyCallback(window,key_callback);
  glfwSetMouseButtonCallback(window,mouse_button_callback);
- /*glfwSetCursorPosCallback(window, cursor_position_callback);*/
+ glfwSetCursorPosCallback(window, cursor_position_callback);
 
  printf("The OpenGL version is: %s\n",glGetString(GL_VERSION));
 
@@ -112,7 +112,11 @@ if (glewInit() != GLEW_OK) {
  {
   glClear(GL_COLOR_BUFFER_BIT);
 
+  core_checker();
+
   polyfunc();
+
+
 
   
   polygon_radians+=PI/180;

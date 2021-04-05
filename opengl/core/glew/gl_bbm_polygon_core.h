@@ -6,7 +6,7 @@ I don't understand all of the code and will go back to https://open.gl/ to learn
 */
 
 /*array to store the data in containing coordinates and colors.*/
-GLfloat polygon_vertex_array[0x1000];
+GLfloat polygon_vertex_array[0x100000];
 
 
 /*
@@ -26,6 +26,9 @@ float gl_chastity_ortho_y(float f)
  return -f;
 }
 
+
+float (*ortho_x)(float)=gl_chastity_ortho_x;
+float (*ortho_y)(float)=gl_chastity_ortho_y;
 
 
 /*
@@ -220,7 +223,7 @@ void get_polygon_points_array_star_tri_color()
   polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
   polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
 
-  tri_color_r0=cx_norm+1;
+  tri_color_r0=1;
   tri_color_g0=polygon_vertex_array[ai-1];
   tri_color_b0=polygon_vertex_array[ai-2];
 
@@ -232,20 +235,20 @@ void get_polygon_points_array_star_tri_color()
   polygon_vertex_array[ai]=gl_chastity_ortho_x(polygon_cx+sin(angle)*polygon_radius); ai++;
   polygon_vertex_array[ai]=gl_chastity_ortho_y(polygon_cy+cos(angle)*polygon_radius); ai++;
 
-  tri_color_r1=polygon_vertex_array[ai-2];
-  tri_color_g1=polygon_vertex_array[ai-1];
-  tri_color_b1=polygon_vertex_array[ai-6];
+  tri_color_r1=polygon_vertex_array[ai-1];
+  tri_color_g1=1;
+  tri_color_b1=polygon_vertex_array[ai-2];
 
   polygon_vertex_array[ai]=tri_color_r1; ai++;
   polygon_vertex_array[ai]=tri_color_g1; ai++;
   polygon_vertex_array[ai]=tri_color_b1; ai++;
 
-  tri_color_r2=polygon_vertex_array[ai-2];
-  tri_color_g2=polygon_vertex_array[ai-1];
-  tri_color_b2=polygon_vertex_array[ai-6];
-
   polygon_vertex_array[ai]=cx_norm; ai++;
   polygon_vertex_array[ai]=cy_norm; ai++;
+
+  tri_color_r2=polygon_vertex_array[ai-1];
+  tri_color_g2=polygon_vertex_array[ai-2];
+  tri_color_b2=1;
 
   polygon_vertex_array[ai]=tri_color_r2; ai++;
   polygon_vertex_array[ai]=tri_color_g2; ai++;
@@ -281,3 +284,96 @@ I finally learned how to use a function pointer!
 This function pointer allows me to change which function is currently being called each frame by various keypresses while the program is running. It defaults to the filled polygon function above but can be changed to anything else!
 */
 void (*polyfunc)()=gl_polygon2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ This is the modern opengl version of the checkerboard function
+ It uses global width and height of the window and the rectsize global defined below.
+It is extremely fast because it sets up coordinates and colors for each vertex and then only after it is done with the entire loop does it draw all the triangles at once. Each square of the checkerboard is actually made of two triangles.
+*/
+
+int rectsize=64;
+
+void core_checker()
+{
+ int x,y,index,index1,ai=0,tricount=0;
+ float color_r,color_g,color_b; /*local to not affect rest of program*/
+
+ index=0;
+ y=0;
+ while(y<height)
+ {
+
+  index1=index;
+  x=0;
+  while(x<width)
+  {
+   if(index==0){color_r=0;color_g=0;color_b=0;}
+   if(index==1){color_r=1;color_g=1;color_b=1;}
+
+  polygon_vertex_array[ai]=ortho_x(x); ai++;
+  polygon_vertex_array[ai]=ortho_y(y); ai++;
+  polygon_vertex_array[ai]=color_r; ai++;
+  polygon_vertex_array[ai]=color_g; ai++;
+  polygon_vertex_array[ai]=color_b; ai++;
+
+  polygon_vertex_array[ai]=ortho_x(x+rectsize); ai++;
+  polygon_vertex_array[ai]=ortho_y(y); ai++;
+  polygon_vertex_array[ai]=color_r; ai++;
+  polygon_vertex_array[ai]=color_g; ai++;
+  polygon_vertex_array[ai]=color_b; ai++;
+
+  polygon_vertex_array[ai]=ortho_x(x); ai++;
+  polygon_vertex_array[ai]=ortho_y(y+rectsize); ai++;
+  polygon_vertex_array[ai]=color_r; ai++;
+  polygon_vertex_array[ai]=color_g; ai++;
+  polygon_vertex_array[ai]=color_b; ai++;
+
+  polygon_vertex_array[ai]=ortho_x(x+rectsize); ai++;
+  polygon_vertex_array[ai]=ortho_y(y+rectsize); ai++;
+  polygon_vertex_array[ai]=color_r; ai++;
+  polygon_vertex_array[ai]=color_g; ai++;
+  polygon_vertex_array[ai]=color_b; ai++;
+
+  polygon_vertex_array[ai]=ortho_x(x+rectsize); ai++;
+  polygon_vertex_array[ai]=ortho_y(y); ai++;
+  polygon_vertex_array[ai]=color_r; ai++;
+  polygon_vertex_array[ai]=color_g; ai++;
+  polygon_vertex_array[ai]=color_b; ai++;
+
+  polygon_vertex_array[ai]=ortho_x(x); ai++;
+  polygon_vertex_array[ai]=ortho_y(y+rectsize); ai++;
+  polygon_vertex_array[ai]=color_r; ai++;
+  polygon_vertex_array[ai]=color_g; ai++;
+  polygon_vertex_array[ai]=color_b; ai++;
+
+  tricount+=2;
+
+   index^=1;
+   x+=rectsize;
+  }
+  index=index1^1;
+  y+=rectsize;
+ }
+
+ glBufferData(GL_ARRAY_BUFFER, sizeof(polygon_vertex_array), polygon_vertex_array, GL_DYNAMIC_DRAW);
+ glDrawArrays(GL_TRIANGLES,0,tricount*3);
+ /*printf("number of triangles %d\n",tricount);*/
+
+}
+
+
