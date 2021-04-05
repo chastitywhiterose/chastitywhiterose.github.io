@@ -4,6 +4,9 @@ On Linux this can be compiled and run like this:
 
 gcc -Wall -ansi -pedantic main.c -o main -lglfw -lOpenGL -lm -lGLEW && ./main
 
-But when trying to compile on Windows within msys, a few modifications are needed.
+But when trying to compile on Windows within msys2, a few modifications are needed.
 
 gcc -Wall -ansi -pedantic main.c -o main -lglfw3 -lOpenGL32 -lm -lGLEW32 && ./main
+
+Compiling with Visual Studio can also be done but I don't have the process memorized. I followed TheCherno's OpenGL series step by step. It appears that msys2 does not have the static libraries as part of the repositories. For this reason I can get a completely static link with Visual Studio because I downloaded and linked to the right files but not with msys2 unless I compile the static libraries myself which is probably not worth the trouble.
+
