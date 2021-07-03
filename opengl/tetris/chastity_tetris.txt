@@ -1,0 +1,1 @@
+I began a project inspired by the game Tetris. I aimed to make my own Tetris clone but am not even close. However I got further than ever before in my attempts to make a game. With enough time it still might become something. It's almost a game.
