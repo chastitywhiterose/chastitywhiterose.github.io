@@ -1,0 +1,12 @@
+These are the commands used to run solution finder on my Linux system.
+
+java -jar sfinder.jar path
+
+java -jar sfinder.jar path -f csv -k pattern
+
+sfinder-minimal output/path.csv
+
+There is probably a lot more it can do if I can translate and read the docs.
+
+https://knewjade.github.io/sfinder-docs
+
