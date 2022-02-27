@@ -6,10 +6,10 @@ Functions for each operation that moves the current block.
 
 int pixel_on_grid(int x,int y)
 {
- if(x<0){printf("Error: Negative X\n");return 1;}
- if(y<0){printf("Error: Negative Y\n");return 1;}
- if(x>=grid_width){printf("Error: X too high.\n");return 1;}
- if(y>=grid_height){printf("Error: Y too high.\n");return 1;}
+ if(x<0){/*printf("Error: Negative X\n");*/return 1;}
+ if(y<0){/*printf("Error: Negative Y\n");*/return 1;}
+ if(x>=grid_width){/*printf("Error: X too high.\n");*/return 1;}
+ if(y>=grid_height){/*printf("Error: Y too high.\n");*/return 1;}
  else{return tetris_grid[block_x+bx+(block_y+by)*grid_width];}
 }
 
@@ -29,7 +29,7 @@ int tetris_check_move()
 
      if( pixel_on_grid(block_x+bx,block_y+by)!=0 )
      {
-      printf("Error: Block in Way on Move Check.\n");
+      /*printf("Error: Block in Way on Move Check.\n");*/
 
       /*because a collision has occurred. We restore everything back to the way it was before block was moved.*/
 
@@ -83,12 +83,13 @@ void tetris_clear_screen()
 void tetris_clear_lines()
 {
  int x,y,xcount,x1,y1;
+
+ lines_cleared=0;
+
  y=grid_height;
  while(y>0)
  {
-
   y-=1;
-
 
   xcount=0;
   x=0;
@@ -98,20 +99,18 @@ void tetris_clear_lines()
    x+=1;
   }
 
-  printf("row %d xcount %d\n",y,xcount);
+  /*printf("row %d xcount %d\n",y,xcount);*/
 
   if(xcount==16)
   {
  
    y1=y;
 
-   
+   /*printf("row %d line clear attempt.\n",y);*/
+
    x1=0;
    while(x1<grid_width)
    {
-
-    printf("row %d line clear attempt.\n",y);
-
     tetris_grid[x1+y1*grid_width]=empty_color;
 
 /*the following lines should not be used here. maybe another function*/
@@ -124,12 +123,90 @@ void tetris_clear_lines()
    }
    
   
+   lines_cleared++;
+  }
+
+ }
+
+ lines_cleared_last=lines_cleared;
+ lines_cleared_total+=lines_cleared;
+
+ /*printf("this line clear: %d\n",lines_cleared);
+ printf("total lines cleared: %d\n",lines_cleared_total);*/
+
+ /*scoring section*/
+ if(lines_cleared==1){score+=100;}
+ if(lines_cleared==2){score+=300;}
+ if(lines_cleared==3){score+=500;}
+ if(lines_cleared==4){score+=800;}
+
+
+}
+
+
+/*next function to finish*/
+
+void tetris_fall_lines()
+{
+ int x,y,xcount,y1,y2;
+
+/* printf("Time to make lines fall\n");*/
+
+ y=grid_height;
+ while(y>1)
+ {
+  y-=1;
+
+  xcount=0;
+  x=0;
+  while(x<grid_width)
+  {
+   if(tetris_grid[x+y*grid_width]!=empty_color){xcount++;}
+   x+=1;
+  }
+
+  /*printf("row %d xcount %d\n",y,xcount);*/
+
+  if(xcount==0)
+  {
+/*   printf("row %d is empty\n",y);*/
+
+   /*find first non empty row above empty row*/
+
+   y1=y;
+   while(y1>1)
+   {
+    y1--;
+    xcount=0;
+    x=0;
+    while(x<grid_width)
+    {
+     if(tetris_grid[x+y1*grid_width]!=empty_color){xcount++;}
+     x+=1;
+    }
+    if(xcount>0)
+    {
+/*     printf("row %d is not empty. Will copy to row %d.\n",y1,y);*/
+
+     x=0;
+
+     x=0;
+     while(x<grid_width)
+     {
+      tetris_grid[x+y*grid_width]=tetris_grid[x+y1*grid_width];
+      tetris_grid[x+y1*grid_width]=empty_color;
+      x++;
+     }
+     break;
+    }
+   }
 
   }
 
  }
 
 }
+
 
 
 
@@ -176,6 +253,8 @@ void tetris_set_block()
 
  tetris_clear_lines();
 
+ if(lines_cleared_last>0){tetris_fall_lines();}
+
 }
 
 /*all things about moving down*/
@@ -184,8 +263,7 @@ void tetris_move_down()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_y+=1;
- if(tetris_check_move()!=0){ printf("Block is finished\n");tetris_set_block();}
- /*score+=1;*/
+ if(tetris_check_move()!=0){ /*printf("Block is finished\n");*/ tetris_set_block();}
 }
 
 

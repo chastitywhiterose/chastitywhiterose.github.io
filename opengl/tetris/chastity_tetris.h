@@ -37,7 +37,7 @@ uint32_t score=0;
 uint32_t empty_color=0x000000;
 
 
-
+uint32_t lines_cleared=0,lines_cleared_last=0,lines_cleared_total=0;
 
 
 void mode_tetris()
@@ -220,21 +220,24 @@ void mode_tetris()
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
 */
 
-/*
- glRasterPos2i(width-fontsize*6,height-fontsize);
- sprintf(text,"%06d",score);
- ftglRenderFont(font,text, FTGL_RENDER_ALL);
-*/
-
 
  glRasterPos2i(fontsize*17,fontsize*1);
  ftglRenderFont(font,"Long Boi Game", FTGL_RENDER_ALL);
+
+ glRasterPos2i(width-fontsize*10,height-fontsize*8);
+ sprintf(text,"Lines: %d",lines_cleared_total);
+ ftglRenderFont(font,text, FTGL_RENDER_ALL);
+
+ glRasterPos2i(width-fontsize*10,height-fontsize*7);
+ sprintf(text,"Score: %d",score);
+ ftglRenderFont(font,text, FTGL_RENDER_ALL);
+
 
  glRasterPos2i(fontsize*17,height-fontsize*1);
  ftglRenderFont(font,"Chastity Rose", FTGL_RENDER_ALL);
  
 /* gl_bbm_checker();*/
- polyfunc();
+ /*polyfunc();*/
  
  glFlush();
   
