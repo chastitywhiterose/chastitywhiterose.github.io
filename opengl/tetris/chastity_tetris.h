@@ -1,31 +1,59 @@
 /*chastity tetris*/
 
 #define tetris_array_size 0x1000
-uint32_t tetris_array[tetris_array_size];
+uint32_t tetris_grid[tetris_array_size];
+uint32_t tetris_grid_backup[tetris_array_size];
+
+uint32_t grid_width=16,grid_height=16;
 
 /*details of current block*/
-uint32_t block_color=0x00FF00;
-int block_x=0,block_y=0,old_block_x=0,old_block_y=0;
+uint32_t block_color=0x00FFFF;
+int block_x=0,block_y=0,block_width=4,block_x1=0,block_y1=0;
 
-int next_block_x=8,next_block_y=0;
+int next_block_x=6,next_block_y=0;
+
+uint32_t block_array_i[]=
+{
+ 0,0,0,0,
+ 1,1,1,1,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
+uint32_t block_array[]=
+{
+ 0,0,0,0,
+ 1,1,1,1,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
+uint32_t block_array_backup[16];
+
+uint32_t bx,by;
 
 uint32_t score=0;
 
 uint32_t empty_color=0x000000;
 
-int direction=0,up=1,down=2,left=3,right=4;
+
+
+
 
 void mode_tetris()
 {
  uint32_t pixel,r,g,b;
  uint32_t x=0,y=0;
- uint32_t *p=tetris_array;
- uint32_t grid_width=16,grid_height=16;
+ uint32_t *p=tetris_grid;
 
  int block_size=height/grid_height;
 
+ block_x=next_block_x;
+ block_y=next_block_y;
+
  printf("block_size==%d\n",block_size);
 
+ /*first empty the grid*/
  y=0;
  while(y<grid_height)
  {
@@ -38,13 +66,14 @@ void mode_tetris()
   y+=1;
  }
 
- x=8;y=8;
- p[x+y*grid_width]=0xFF00FF;
-
+ /*
+  x=8;y=8;
+  p[x+y*grid_width]=0xFF00FF;
+ */
 
 
  /*set size and position of polygon*/
- polygon_cx=width/2;
+ polygon_cx=width*13/16;
  polygon_cy=height/2;
  polygon_radius=height/3;
   /*set the current polygon function to filled star*/
@@ -56,44 +85,75 @@ void mode_tetris()
 
 
   block_x=next_block_x;block_y=next_block_y;
-  old_block_x=block_x;old_block_y=block_y;
-
  
   /* Loop until the user closes the window */
  while(!glfwWindowShouldClose(window))
  {
+
   glClear(GL_COLOR_BUFFER_BIT);
 
-
-
-  if(block_x<0||block_x>=grid_width){block_x=old_block_x;}
-  else if(block_y<0||block_y>=grid_height){block_y=old_block_y;}
-
-  if(p[block_x+block_y*grid_width]==empty_color)
+ /*make backup of entire grid*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
   {
-    p[old_block_x+old_block_y*grid_width]=empty_color;
-    p[block_x+block_y*grid_width]=block_color;
-    old_block_x=block_x;old_block_y=block_y;
+   tetris_grid_backup[x+y*grid_width]=p[x+y*grid_width];
+   x+=1;
   }
-  else
+  y+=1;
+ }
+
+  /*draw block onto grid at it's current location*/
+  by=0;
+  while(by<4)
   {
-
-   block_x=old_block_x;
-   block_y=old_block_y;
-
-
-   if(direction==down)
+   bx=0;
+   while(bx<4)
    {
-    block_x=next_block_x;block_y=next_block_y;
-    old_block_x=block_x;old_block_y=block_y;
-   }
+    if(block_array[bx+by*4]!=0)
+    {
+     if( p[block_x+bx+(block_y+by)*grid_width]!=0 )
+     {
+      printf("Error: Block in Way\n");
 
+      /*because a collision has occurred. We restore everything back to the way it was before block was moved.*/
+
+      /*restore backup of block location*/
+      block_x=block_x1,block_y=block_y1;
+
+     /*Restore backup of entire grid*/
+     y=0;
+     while(y<grid_height)
+     {
+      x=0;
+      while(x<grid_width)
+      {
+       p[x+y*grid_width]=tetris_grid_backup[x+y*grid_width];
+       x+=1;
+      }
+      y+=1;
+     }
+
+      break;}
+     else
+     {
+      p[block_x+bx+(block_y+by)*grid_width]=block_color;
+     }
+    }
+    bx+=1;
+   }
+   by+=1;
   }
 
-  direction=0; /*reset the direction until next input*/
 
 
-/*drawing the tetris grid*/
+
+/*display the tetris grid*/
+
+
+
  y=0;
  while(y<grid_height)
  {
@@ -110,7 +170,6 @@ void mode_tetris()
 /* printf("x=%d y=%d ",x,y);
    printf("red=%d green=%d blue=%d\n",r,g,b);
 */
-
    glColor3ub(r, g, b);
    glRecti(x*block_size,y*block_size,x*block_size+block_size,y*block_size+block_size);
 
@@ -118,7 +177,25 @@ void mode_tetris()
   }
   y+=1;
  }
+
+
  /*end of drawing code for grid*/
+
+
+ /*Restore backup of entire grid*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
+  {
+   p[x+y*grid_width]=tetris_grid_backup[x+y*grid_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+
 
  /*change color back to white before drawing text*/
  glColor3f(1.0,1.0,1.0);
@@ -131,27 +208,33 @@ void mode_tetris()
    sprintf(text,"%d",frame_displayed);
    ftglRenderFont(font,text,FTGL_RENDER_ALL);
  */
-   glRasterPos2i(width-fontsize*5,fontsize);
+
+/*glRasterPos2i(width-fontsize*12,height-fontsize*1);
    sprintf(text,"%d:%02d:%02d",hours,minutes,seconds);
    ftglRenderFont(font,text,FTGL_RENDER_ALL);
+*/
 
- glRasterPos2i(width-fontsize*6,height-fontsize*2);
+/*
+ glRasterPos2i(width-fontsize*6,height-fontsize*1);
  sprintf(text,"x=%d y=%d",block_x,block_y);
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
+*/
 
+/*
  glRasterPos2i(width-fontsize*6,height-fontsize);
  sprintf(text,"%06d",score);
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
+*/
 
 
-/*
- glRasterPos2i(fontsize*18,height-fontsize);
- ftglRenderFont(font,"Chastity", FTGL_RENDER_ALL);
-*/ 
+ glRasterPos2i(fontsize*17,fontsize*1);
+ ftglRenderFont(font,"Long Boi Game", FTGL_RENDER_ALL);
 
+ glRasterPos2i(fontsize*17,height-fontsize*1);
+ ftglRenderFont(font,"Chastity Rose", FTGL_RENDER_ALL);
  
- /*gl_bbm_checker();*/
- /*polyfunc();*/
+/* gl_bbm_checker();*/
+ polyfunc();
  
  glFlush();
   
@@ -184,8 +267,7 @@ void mode_tetris()
   {
    glfwseconds=glfwGetTime();
   }
-  
-  
+    
  }
  
 }

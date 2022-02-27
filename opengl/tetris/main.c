@@ -50,6 +50,7 @@ int text_switch=1;
 
 /*header for different operating modes*/
 #include "chastity_tetris.h"
+#include "chastity_tetris_moves.h"
 
 /*
 Resource for key names:
@@ -70,32 +71,40 @@ void key_callback(GLFWwindow* window,int key,int scancode,int action,int mods)
    /*keys that move the current block*/
    case GLFW_KEY_UP:
    case GLFW_KEY_W:
-    old_block_x=block_x;old_block_y=block_y;
-    block_y-=1;
-    direction=up;
+   tetris_move_up();
    break;
    case GLFW_KEY_LEFT:
    case GLFW_KEY_A:
-    old_block_x=block_x;old_block_y=block_y;
-    block_x-=1;
-    direction=left;
+   tetris_move_left();
    break;
    case GLFW_KEY_DOWN:
    case GLFW_KEY_S:
-    old_block_x=block_x;old_block_y=block_y;
-    block_y+=1;
-    score+=1;
-    direction=down;
+    tetris_move_down();
    break;
    case GLFW_KEY_RIGHT:
    case GLFW_KEY_D:
-    old_block_x=block_x;old_block_y=block_y;
-    block_x+=1;
-    direction=right;
+ /*make backup of block location*/
+tetris_move_right();
    break;
 
-   
+   case GLFW_KEY_X:
+   block_rotate_right();
+   break;
+
+   case GLFW_KEY_Z:
+
+   block_rotate_left();
+
+   /*this also works*/
+
+   /*
+   block_rotate_right();
+   block_rotate_right();
+   block_rotate_right();
+  */
+   break;
   }
+
  }
 }
 
@@ -156,12 +165,10 @@ int main(int argc, char **argv)
  
  if(!glfwInit()){return 1;} /*Initialize GLFW*/
   
-
-
  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,2); /*Using version 2.1 of OpenGL*/
  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,1);
  glfwWindowHint(GLFW_DOUBLEBUFFER,GLFW_FALSE); /*single buffered window*/
- window=glfwCreateWindow(width,height,"Chastity's Game Work in Progress",NULL,NULL);
+ window=glfwCreateWindow(width,height,"Chastity's Game: Long Boi",NULL,NULL);
  if(!window){glfwTerminate();return 1;}
  
  glfwMakeContextCurrent(window);
@@ -171,14 +178,13 @@ int main(int argc, char **argv)
 
  glOrtho(0.0,width,height,0.0,-1.0,1.0); /*2D orthographic matrix*/
  glClearColor(0.0,0.0,0.0,1.0); /*color used to clear the window*/
- 
- 
+  
  printf("The OpenGL version is: %s\n",glGetString(GL_VERSION));
-
  
  /*now that context,fonts,and colors are loaded, can start a program!*/
  
  mode_tetris();
+
 
  
 
