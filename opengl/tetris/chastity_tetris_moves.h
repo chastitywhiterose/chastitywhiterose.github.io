@@ -148,7 +148,7 @@ void tetris_clear_lines()
 
 void tetris_fall_lines()
 {
- int x,y,xcount,y1,y2;
+ int x,y,xcount,y1;
 
 /* printf("Time to make lines fall\n");*/
 

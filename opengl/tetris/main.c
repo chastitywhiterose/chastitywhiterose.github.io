@@ -159,7 +159,10 @@ int main(int argc, char **argv)
  if(!chastity_ftgl_begin()){return 0;}
  ftglSetFontFaceSize(font,fontsize,0);
 
- printf("This might be a game someday.\n");
+ printf("Welcome to the game \"Long Boi\" by Chastity White Rose\n");
+
+ printf("Email: chastitywhiterose@gmail.com for any questions!\n");
+
  
  glfwSetErrorCallback(error_callback);
  

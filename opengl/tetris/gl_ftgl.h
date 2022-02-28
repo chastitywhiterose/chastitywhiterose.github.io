@@ -17,7 +17,17 @@ int chastity_ftgl_begin()
   if(!font)
   {
    printf("Failed to load second font \"%s\"!\n",fontname);
-   return 0;
+   printf("Will try one more time.\n");
+
+   sprintf(fontname,"./font/Hack-Regular.ttf"); /*included with source*/
+   font = ftglCreatePixmapFont(fontname);
+   
+   if(!font)
+   {
+    printf("Failed to load third font \"%s\"!\n",fontname);
+    return 0;
+   }
+   
   }
  }
 

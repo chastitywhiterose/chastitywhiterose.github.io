@@ -1,1 +1,11 @@
-I began a project inspired by the game Tetris. I aimed to make my own Tetris clone but am not even close. However I got further than ever before in my attempts to make a game. With enough time it still might become something. It's almost a game.
+I began a project inspired by the game Tetris. I aimed to make my own Tetris clone but this game has only long blocks. Their official name is the I block. My roommate River calls it the Long Boi.
+
+This program compiles on my Linux system like this:
+
+gcc -Wall -ansi -pedantic main.c -o main -lglfw -lOpenGL -lm `pkg-config --cflags --libs ftgl`
+
+And compiles under msys2 on Windows with this command:
+
+gcc -Wall -ansi -pedantic main.c -o main -lOpenGL32 -lm `pkg-config --cflags --libs glfw3` `pkg-config --cflags --libs ftgl`
+
+For some reason it works only when I start under the 64 bit mode but not the 32 bit. But that's fine.
