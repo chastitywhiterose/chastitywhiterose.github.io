@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Chastity's Game: Long Boi</title>
 
-<link rel="stylesheet" href="../chastity.css">
+<link rel="stylesheet" href="../../chastity.css">
 
 </head>
 <body>
@@ -17,67 +17,25 @@ Long Boi is a Tetris clone that I wrote which contains only the long block. Beca
 
 
 <p>
-The full source code required to make that triangle is available. You can download all 3 of these files.<br>
-<a href="./glut/main.c">main.c</a> <br>
-<a href="./glut/makefile">makefile</a> <br>
-<a href="./glut/polygon_animation.txt">polygon_animation.txt</a> <br>
-</p>
-
-<p>
-To make it work you will need a lot of tools however! A C compiler, a PC with good operating system(preferably Linux), and a method of installing freeglut. This is the unfortunate disadvantage of being a C programmer. Using the tools can be harder than writing the actual code. In the future I intend to write a guide on this topic. But any experienced C programmer who has compiled other things from source can figure it out. For non programmers, all you need to know is that OpenGL is quite capable of doing incredible graphics! I recommend learning the C Programming Language and OpenGL if you are looking to make similar graphics. I have only a very basic understanding of it but my polygons are proof that it works.
-</p>
-
-
-
-<p>
-Aside from freeglut, I have also had success with
-<a href="https://www.glfw.org/">glfw</a>.
-It works a little differently in that it does not require a display callback and also that the programmer has to know better how to control the timing of it because it doesn't have the timed callback functions and I use functions which get the time and loop until the right amount has passed.
+The source code files required to compile it are all available here:<br>
 <br>
-But no matter what, the same exact OpenGL code is available whether freeglut or glfw once the context is set up. Therefore the following pentagram was made using the exact same code that saves image files as was used for the triangle.
-</p>
+<a href="./main.c">main.c</a> <br>
+<a href="./makefile">makefile</a> <br>
+<a href="./chastity_tetris.h">chastity_tetris.h</a> <br>
+<a href="./chastity_tetris_moves.h">chastity_tetris_moves.h</a> <br>
+<a href="./gl_bbmio.h">gl_bbmio.h</a> <br>
+<a href="gl_bbm_polygon.h">gl_bbm_polygon.h</a> <br>
+<a href="gl_ftgl.h">gl_ftgl.h</a> <br>
+<a href="readme.txt">readme.txt</a> <br>
 
-<img src="./glfw/gif/pentagram_720.gif">
-
-<p>
-The full source code required to make the above pentagram is also available. You can download these 2 files.<br>
-<a href="./glfw/main.c">main.c</a> <br>
-<a href="./glfw/makefile">makefile</a> <br>
-</p>
-
-<img src="./glut/gif/hue_square_720.gif">
-
-<p>
-OpenGL is definitely not limited to only black and white, even though the theme of my site is based on those two colors. For this reason I also made the color changing hue square which you should also see above this paragraph. Like the other examples, I have provided the source. However, notice that this time there are multiple files. I do not always put everything in only the main.c file as in the two above examples.
 </p>
 
 <p>
-<a href="./glut/hue/main.c">main.c</a> <br>
-<a href="./glut/hue/gl_bbmio.h">gl_bbmio.h</a> <br>
-<a href="./glut/hue/gl_bbm_polygon.h">gl_bbm_polygon.h</a> <br>
-<a href="./glut/hue/gl_bbm_palette.h">gl_bbm_palette.h</a> <br>
-<a href="./glut/hue/makefile">makefile</a> <br>
+All graphics are done with the glfw library, legacy opengl, and ftgl for rendering the fonts. As such, it's no easy task to install all the required tools unless you're running Linux and have a package manager that can install them with a few commands. The makefile contains the commands required to compile on Linux or inside <a href="https://www.msys2.org/">msys2</a> running under Windows.
 </p>
 
 <p>
-If you like what you see here. You may want to see the
-<a href="./glut/checker/opengl_checker.html">checkerboard</a>
-examples.
-</p>
-
-<p>
-You may have noticed that there is no text on any of the animations. This is because at the time I did not know how to draw text in a program created with OpenGL. However I did have some success later at using
-<a href="./ftgl/ftgl.html">FTGL</a> to draw text in an animation. My skills and knowledge are slowly improving.
-</p>
-
-<p>
-Some time after I learned to use FTGL I began a new 
-<a href="./chastity/index.html">project</a> which will function as the place everybody who visits my website can find the latest version of my OpenGL code including better versions of the header files seen in the other examples. I now prefer glfw for the greater control it allows me to have.
-</p>
-
-<p>
-Most OpenGL code on this website is compatible with legacy version 1.1 which is considered outdated at this time. I still prefer it though. However I decided to learn modern or
-<a href="./core/index.html">core</a> version 3.3 just to see how it is different. It requires shaders and is a lot more complicated but I wanted a challenge.
+I have a <a href="https://1drv.ms/u/s!Aovs14QF6QY_o3RG0mzoQiRhuapU">Windows version</a> available to download as well. However most of the development was done on <a href="https://ubuntu.com/">Ubuntu Linux</a> because it is a lot easier to compile C code.
 </p>
 
 </body>
