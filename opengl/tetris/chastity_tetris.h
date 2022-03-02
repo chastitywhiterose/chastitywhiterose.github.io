@@ -4,11 +4,11 @@
 uint32_t tetris_grid[tetris_array_size];
 uint32_t tetris_grid_backup[tetris_array_size];
 
-uint32_t grid_width=16,grid_height=16;
+uint32_t grid_width=10,grid_height=20;
 
 /*details of current block*/
 uint32_t block_color=0x00FFFF;
-int block_x=0,block_y=0,block_width=4,block_x1=0,block_y1=0;
+int block_x=0,block_y=0,block_width=4,block_x1=0,block_y1=0,current_block_width=4;
 
 int next_block_x=6,next_block_y=0;
 
@@ -19,6 +19,55 @@ uint32_t block_array_i[]=
  0,0,0,0,
  0,0,0,0,
 };
+
+uint32_t block_array_t[]=
+{
+ 0,1,0,0,
+ 1,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
+uint32_t block_array_z[]=
+{
+ 1,1,0,0,
+ 0,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
+uint32_t block_array_j[]=
+{
+ 1,0,0,0,
+ 1,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
+uint32_t block_array_o[]=
+{
+ 1,1,0,0,
+ 1,1,0,0,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
+uint32_t block_array_l[]=
+{
+ 0,0,1,0,
+ 1,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
+uint32_t block_array_s[]=
+{
+ 0,1,1,0,
+ 1,1,0,0,
+ 0,0,0,0,
+ 0,0,0,0,
+};
+
 
 uint32_t block_array[]=
 {
@@ -39,6 +88,84 @@ uint32_t empty_color=0x000000;
 
 uint32_t lines_cleared=0,lines_cleared_last=0,lines_cleared_total=0;
 
+int block_type=0;
+
+void spawn_block()
+{
+ int x,y;
+ uint32_t *p;
+
+ if(block_type==0)
+ {
+  p=block_array_i;
+  block_color=0x00FFFF;
+  current_block_width=4;
+ }
+
+ if(block_type==1)
+ {
+  p=block_array_t;
+  block_color=0xFF00FF;
+  current_block_width=3;
+ }
+
+ if(block_type==2)
+ {
+  p=block_array_z;
+  block_color=0xFF0000;
+  current_block_width=3;
+ }
+
+ if(block_type==3)
+ {
+  p=block_array_j;
+  block_color=0x0000FF;
+  current_block_width=3;
+ }
+
+ if(block_type==4)
+ {
+  p=block_array_o;
+  block_color=0xFFFF00;
+  current_block_width=2;
+ }
+
+ if(block_type==5)
+ {
+  p=block_array_l;
+  block_color=0xFF7F00;
+  current_block_width=3;
+ }
+
+ if(block_type==6)
+ {
+  p=block_array_s;
+  block_color=0x00FF00;
+  current_block_width=3;
+ }
+
+ /*copy another new block array into the current one*/
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   block_array[x+y*block_width]=p[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ block_x=next_block_x;
+ block_y=next_block_y;
+
+ /*optionally increment block type for different block next time.*/
+ block_type++;
+ block_type%=7;
+
+}
+
 
 void mode_tetris()
 {
@@ -48,10 +175,10 @@ void mode_tetris()
 
  int block_size=height/grid_height;
 
- block_x=next_block_x;
- block_y=next_block_y;
-
  printf("block_size==%d\n",block_size);
+
+ spawn_block();
+
 
  /*first empty the grid*/
  y=0;

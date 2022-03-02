@@ -101,7 +101,7 @@ void tetris_clear_lines()
 
   /*printf("row %d xcount %d\n",y,xcount);*/
 
-  if(xcount==16)
+  if(xcount==grid_width)
   {
  
    y1=y;
@@ -216,44 +216,28 @@ void tetris_set_block()
 
 
   /*draw block onto grid at it's current location*/
-  by=0;
-  while(by<4)
+  y=0;
+  while(y<4)
   {
-   bx=0;
-   while(bx<4)
+   x=0;
+   while(x<4)
    {
-    if(block_array[bx+by*4]!=0)
+    if(block_array[x+y*4]!=0)
     {
-      tetris_grid[block_x+bx+(block_y+by)*grid_width]=block_color; 
+      tetris_grid[block_x+x+(block_y+y)*grid_width]=block_color; 
     }
-    bx+=1;
+    x+=1;
    }
-   by+=1;
+   y+=1;
   }
 
 
-
-
- /*copy another new block array into the current one*/
- y=0;
- while(y<block_width)
- {
-  x=0;
-  while(x<block_width)
-  {
-   block_array[x+y*block_width]=block_array_i[x+y*block_width];
-   x+=1;
-  }
-  y+=1;
- }
-
- /*set the initial position of the next block*/ 
- block_x=next_block_x;
- block_y=next_block_y;
 
  tetris_clear_lines();
 
  if(lines_cleared_last>0){tetris_fall_lines();}
+
+ spawn_block();
 
 }
 
@@ -307,10 +291,10 @@ void block_rotate_right()
 
  /*first backup block grid*/
  y=0;
- while(y<block_width)
+ while(y<current_block_width)
  {
   x=0;
-  while(x<block_width)
+  while(x<current_block_width)
   {
    block_array_backup[x+y*block_width]=block_array[x+y*block_width];
    x+=1;
@@ -320,14 +304,14 @@ void block_rotate_right()
 
  /*copy it from top to bottom to right to left(my own genius rotation trick)*/
 
- x1=block_width;
+ x1=current_block_width;
  y=0;
- while(y<block_width)
+ while(y<current_block_width)
  {
   x1--;
   y1=0;
   x=0;
-  while(x<block_width)
+  while(x<current_block_width)
   {
    block_array[x1+y1*block_width]=block_array_backup[x+y*block_width];
    x+=1;
@@ -367,10 +351,10 @@ void block_rotate_left()
 
  /*first backup block grid*/
  y=0;
- while(y<block_width)
+ while(y<current_block_width)
  {
   x=0;
-  while(x<block_width)
+  while(x<current_block_width)
   {
    block_array_backup[x+y*block_width]=block_array[x+y*block_width];
    x+=1;
@@ -380,14 +364,14 @@ void block_rotate_left()
 
  /*copy it from top to bottom to right to left(my own genius rotation trick)*/
 
- x1=block_width;
+ x1=current_block_width;
  y=0;
- while(y<block_width)
+ while(y<current_block_width)
  {
   x1--;
   y1=0;
   x=0;
-  while(x<block_width)
+  while(x<current_block_width)
   {
    block_array[x+y*block_width]=block_array_backup[x1+y1*block_width];
    x+=1;
