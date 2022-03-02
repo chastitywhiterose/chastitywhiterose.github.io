@@ -5,7 +5,11 @@
 #include <math.h>
 #include <GLFW/glfw3.h>
 
-const int width=1280,height=720; /*size of window*/
+/*size of window*/
+int width=1280,height=720;
+/*ideal for fullscreen*/
+/*int width=1920,height=1080;*/
+int fullscreen=0;
 
 #include <FTGL/ftgl.h>
 FTGLfont *font;
@@ -25,11 +29,15 @@ int frame_displayed=0;
 /*declare variables for attributes of the polygon*/
 int polygon_sides=3;         /*how many sides and/or corners of polygon*/
 int polygon_step=1;
-float polygon_cx=width/2;          /*horizontal left/right x coordinate of center*/
-float polygon_cy=height/2;         /*vertical up/down y coordinate of center*/
-float polygon_radius=height/3;     /*radius or how big the polygon will be*/
+
 float polygon_radians=0;           /*rotation of the polygon*/
 float polygon_radians_step=PI/180; /*how much the polygon rotates each frame*/
+
+
+/*these next 3 variables will be set later*/
+float polygon_cx;          /*horizontal left/right x coordinate of center*/
+float polygon_cy;         /*vertical up/down y coordinate of center*/
+float polygon_radius;     /*radius or how big the polygon will be*/
 
 /*declare two arrays for points. One for x and one for y.*/
 float polygon_xpoints[0x1000],polygon_ypoints[0x1000];
@@ -163,6 +171,11 @@ int main(int argc, char **argv)
 
  printf("Email: chastitywhiterose@gmail.com for any questions!\n");
 
+/*set up polygon logcation and size based on screen dimensions*/
+polygon_cx=width/2;          /*horizontal left/right x coordinate of center*/
+polygon_cy=height/2;         /*vertical up/down y coordinate of center*/
+polygon_radius=height/3;     /*radius or how big the polygon will be*/
+
  
  glfwSetErrorCallback(error_callback);
  
@@ -171,7 +184,21 @@ int main(int argc, char **argv)
  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,2); /*Using version 2.1 of OpenGL*/
  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,1);
  glfwWindowHint(GLFW_DOUBLEBUFFER,GLFW_FALSE); /*single buffered window*/
- window=glfwCreateWindow(width,height,"Chastity's Game: Long Boi",NULL,NULL);
+
+ if(fullscreen!=0)
+ {
+  width=1920;height=1080;
+  window=glfwCreateWindow(width,height,"Chastity's Game: Long Boi",glfwGetPrimaryMonitor(),NULL);
+ }
+ else
+ {
+  width=1280;height=720;
+  window=glfwCreateWindow(width,height,"Chastity's Game: Long Boi",NULL,NULL);
+ }
+
+
+
+ /*window=glfwCreateWindow(width,height,"Chastity's Game: Long Boi",NULL,NULL);*/
  if(!window){glfwTerminate();return 1;}
  
  glfwMakeContextCurrent(window);

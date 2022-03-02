@@ -10,7 +10,7 @@ uint32_t grid_width=10,grid_height=20;
 uint32_t block_color=0x00FFFF;
 int block_x=0,block_y=0,block_width=4,block_x1=0,block_y1=0,current_block_width=4;
 
-int next_block_x=6,next_block_y=0;
+int next_block_x,next_block_y;
 
 uint32_t block_array_i[]=
 {
@@ -157,12 +157,14 @@ void spawn_block()
   y+=1;
  }
 
+ next_block_x=(grid_width-current_block_width)/2;
+ next_block_y=0;
+
  block_x=next_block_x;
  block_y=next_block_y;
 
  /*optionally increment block type for different block next time.*/
- block_type++;
- block_type%=7;
+ block_type++;  block_type%=7;
 
 }
 
@@ -174,6 +176,10 @@ void mode_tetris()
  uint32_t *p=tetris_grid;
 
  int block_size=height/grid_height;
+ int grid_offset_x=block_size; /*how far from the left size of the window the grid display is*/
+
+ next_block_x=(grid_width-current_block_width)/2;
+ next_block_y=0;
 
  printf("block_size==%d\n",block_size);
 
@@ -298,7 +304,7 @@ void mode_tetris()
    printf("red=%d green=%d blue=%d\n",r,g,b);
 */
    glColor3ub(r, g, b);
-   glRecti(x*block_size,y*block_size,x*block_size+block_size,y*block_size+block_size);
+   glRecti(grid_offset_x+x*block_size,y*block_size,grid_offset_x+x*block_size+block_size,y*block_size+block_size);
 
    x+=1;
   }
@@ -327,8 +333,9 @@ void mode_tetris()
  /*change color back to white before drawing text*/
  glColor3f(1.0,1.0,1.0);
 
- /*draw the boundary wall*/
- glRecti(grid_width*block_size,0*block_size,grid_width*block_size+block_size,height*block_size+block_size);
+ /*draw the boundary walls*/
+ glRecti(0*block_size,0*block_size,block_size,height*block_size);
+ glRecti(grid_offset_x+grid_width*block_size,0*block_size,grid_offset_x+grid_width*block_size+block_size,height*block_size);
 
  /*
    glRasterPos2i(fontsize,fontsize);
@@ -348,20 +355,20 @@ void mode_tetris()
 */
 
 
- glRasterPos2i(fontsize*17,fontsize*1);
+ glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*1);
  ftglRenderFont(font,"Long Boi Game", FTGL_RENDER_ALL);
 
- glRasterPos2i(width-fontsize*10,height-fontsize*8);
+ glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*3);
  sprintf(text,"Lines: %d",lines_cleared_total);
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
 
- glRasterPos2i(width-fontsize*10,height-fontsize*7);
+ glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*4);
  sprintf(text,"Score: %d",score);
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
 
 
- glRasterPos2i(fontsize*17,height-fontsize*1);
- ftglRenderFont(font,"Chastity Rose", FTGL_RENDER_ALL);
+ glRasterPos2i(grid_width*block_size+fontsize*2,height-fontsize*1);
+ ftglRenderFont(font,"Chastity White Rose", FTGL_RENDER_ALL);
  
 /* gl_bbm_checker();*/
  /*polyfunc();*/

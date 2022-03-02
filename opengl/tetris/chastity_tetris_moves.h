@@ -113,12 +113,6 @@ void tetris_clear_lines()
    {
     tetris_grid[x1+y1*grid_width]=empty_color;
 
-/*the following lines should not be used here. maybe another function*/
-/*
-    tetris_grid[x1+y1*grid_width]=tetris_grid[x1+(y1-1)*grid_width];
-    tetris_grid[x1+(y1-1)*grid_width]=empty_color;
-*/
-
     x1++;
    }
    
@@ -128,7 +122,7 @@ void tetris_clear_lines()
 
  }
 
- lines_cleared_last=lines_cleared;
+
  lines_cleared_total+=lines_cleared;
 
  /*printf("this line clear: %d\n",lines_cleared);
@@ -138,8 +132,16 @@ void tetris_clear_lines()
  if(lines_cleared==1){score+=100;}
  if(lines_cleared==2){score+=300;}
  if(lines_cleared==3){score+=500;}
- if(lines_cleared==4){score+=800;}
+ if(lines_cleared==4)
+ {
+  if(lines_cleared_last==4){score+=1200;}
+  else{score+=800;}
+ }
 
+ if(lines_cleared!=0)
+ {
+  lines_cleared_last=lines_cleared;
+ }
 
 }
 
