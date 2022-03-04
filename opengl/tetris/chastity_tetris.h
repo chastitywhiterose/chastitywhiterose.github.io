@@ -8,9 +8,25 @@ uint32_t grid_width=10,grid_height=20;
 
 /*details of current block*/
 uint32_t block_color=0x00FFFF;
-int block_x=0,block_y=0,block_width=4,block_x1=0,block_y1=0,current_block_width=4;
+int block_x=0,block_y=0,block_width=4,block_x1=0,block_y1=0,current_block_width=4,current_block_id=0;
 
 int next_block_x,next_block_y;
+
+uint32_t block_array_backup[16],backup_block_width,backup_block_color;/*backup during rotation*/
+
+int hold_used=0;
+int block_array_hold[16],hold_block_width,hold_block_color,hold_block_id=0; /*the hold block storage*/
+int block_array_hold1[16],hold1_block_width,hold1_block_color,hold1_block_id; /*the second hold block storage*/
+
+
+uint32_t bx,by;
+
+uint32_t score=0;
+
+uint32_t empty_color=0x000000;
+
+
+uint32_t lines_cleared=0,lines_cleared_last=0,lines_cleared_total=0;
 
 uint32_t block_array_i[]=
 {
@@ -77,16 +93,7 @@ uint32_t block_array[]=
  0,0,0,0,
 };
 
-uint32_t block_array_backup[16];
 
-uint32_t bx,by;
-
-uint32_t score=0;
-
-uint32_t empty_color=0x000000;
-
-
-uint32_t lines_cleared=0,lines_cleared_last=0,lines_cleared_total=0;
 
 int block_type=0;
 
@@ -100,6 +107,7 @@ void spawn_block()
   p=block_array_i;
   block_color=0x00FFFF;
   current_block_width=4;
+  current_block_id='I';
  }
 
  if(block_type==1)
@@ -107,6 +115,7 @@ void spawn_block()
   p=block_array_t;
   block_color=0xFF00FF;
   current_block_width=3;
+  current_block_id='T';
  }
 
  if(block_type==2)
@@ -114,6 +123,7 @@ void spawn_block()
   p=block_array_z;
   block_color=0xFF0000;
   current_block_width=3;
+  current_block_id='Z';
  }
 
  if(block_type==3)
@@ -121,6 +131,7 @@ void spawn_block()
   p=block_array_j;
   block_color=0x0000FF;
   current_block_width=3;
+  current_block_id='J';
  }
 
  if(block_type==4)
@@ -128,6 +139,7 @@ void spawn_block()
   p=block_array_o;
   block_color=0xFFFF00;
   current_block_width=2;
+  current_block_id='O';
  }
 
  if(block_type==5)
@@ -135,6 +147,7 @@ void spawn_block()
   p=block_array_l;
   block_color=0xFF7F00;
   current_block_width=3;
+  current_block_id='L';
  }
 
  if(block_type==6)
@@ -142,6 +155,7 @@ void spawn_block()
   p=block_array_s;
   block_color=0x00FF00;
   current_block_width=3;
+  current_block_id='S';
  }
 
  /*copy another new block array into the current one*/
@@ -163,8 +177,7 @@ void spawn_block()
  block_x=next_block_x;
  block_y=next_block_y;
 
- /*optionally increment block type for different block next time.*/
- block_type++;  block_type%=7;
+
 
 }
 
@@ -366,6 +379,13 @@ void mode_tetris()
  sprintf(text,"Score: %d",score);
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
 
+ glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*5);
+ sprintf(text,"This: %c",current_block_id);
+ ftglRenderFont(font,text, FTGL_RENDER_ALL);
+
+ glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*6);
+ sprintf(text,"Hold: %c",hold_block_id);
+ ftglRenderFont(font,text, FTGL_RENDER_ALL);
 
  glRasterPos2i(grid_width*block_size+fontsize*2,height-fontsize*1);
  ftglRenderFont(font,"Chastity White Rose", FTGL_RENDER_ALL);

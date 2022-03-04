@@ -111,6 +111,12 @@ tetris_move_right();
    block_rotate_right();
   */
    break;
+
+   case GLFW_KEY_C:
+   block_hold();
+   break;
+
+
   }
 
  }

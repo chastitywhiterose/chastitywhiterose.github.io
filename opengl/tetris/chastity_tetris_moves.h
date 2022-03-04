@@ -239,7 +239,11 @@ void tetris_set_block()
 
  if(lines_cleared_last>0){tetris_fall_lines();}
 
+ /*optionally increment block type for different block next time.*/
+ block_type++;  block_type%=7;
+
  spawn_block();
+
 
 }
 
@@ -264,7 +268,7 @@ void tetris_move_up()
 }
 
 
-/*all things about moving up*/
+/*all things about moving right*/
 void tetris_move_right()
 {
  /*make backup of block location*/
@@ -273,7 +277,7 @@ void tetris_move_right()
  tetris_check_move();
 }
 
-/*all things about moving up*/
+/*all things about moving left*/
 void tetris_move_left()
 {
  /*make backup of block location*/
@@ -401,5 +405,74 @@ void block_rotate_left()
 
 }
 
+
+
+void block_hold()
+{
+ uint32_t x=0,y=0;
+
+
+
+/*printf("hold block width: %d\n",hold_block_width);*/
+
+if(hold_used==0) /*just store block if nothing there*/
+{
+
+ printf("hold block used first time.\n");
+
+ hold_block_width=current_block_width;
+ hold_block_color=block_color;
+ hold_block_id=current_block_id;
+
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   block_array_hold[x+y*block_width]=block_array[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ /*optionally increment block type for different block next time.*/
+ block_type++;  block_type%=7;
+ spawn_block();
+
+ hold_used=1;
+
+}
+
+else
+{
+
+ printf("Swap with previous hold block.\n");
+
+ hold1_block_width=hold_block_width; hold1_block_color=hold_block_color; hold1_block_id=hold_block_id; /*put the hold block into temp storage*/
+ hold_block_width=current_block_width; hold_block_color=block_color; hold_block_id=current_block_id;      /*place current block into the hold spot*/
+ current_block_width=hold1_block_width; block_color=hold1_block_color; current_block_id=hold1_block_id;   /*make the current block be the block that was held last time*/
+
+
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   block_array_hold1[x+y*block_width]=block_array_hold[x+y*block_width]; 
+   block_array_hold[x+y*block_width]=block_array[x+y*block_width];
+   block_array[x+y*block_width]=block_array_hold1[x+y*block_width];
+   x+=1;
+  }
+
+  y+=1;
+ }
+
+}
+
+
+ 
+}
 
 
