@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chastity's Game</title>
+</head>
+<body>
+
+<h1>Long Boi Game JavaScript Edition</h1>
+
+<canvas id="myCanvas" width="360" height="720">
+Your browser does not support the HTML canvas tag.
+</canvas>
+
+<script>
+var cvs = document.getElementById("myCanvas");
+var ctx = cvs.getContext("2d");
+var fps=60;
+
+var width=cvs.width;
+var height=cvs.height;
+
+
+console.log("width="+width);
+console.log("height="+height);
+
+var x,y;
+
+/*create tetris grid*/
+var tetris_grid=[];
+var tetris_grid_backup=[];
+var grid_height=20;
+grid_width=10;
+
+var block_size=height/grid_height;
+
+/*first empty the grid*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
+  {
+   tetris_grid[x+y*grid_width]="#000000";
+   x+=1;
+  }
+  y+=1;
+ }
+
+
+/*console.log("width="+tetris_grid);*/
+
+//x=5;y=8;
+//tetris_grid[x+y*grid_width]="#FF0000";
+
+var block_width=4; /*actual width of all arrays is 4*/
+
+
+/*create some block data*/
+var block_array_i=
+[
+ 0,0,0,0,
+ 1,1,1,1,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+var block_array_t=
+[
+ 0,1,0,0,
+ 1,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+var block_array_z=
+[
+ 1,1,0,0,
+ 0,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+var block_array_j=
+[
+ 1,0,0,0,
+ 1,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+var block_array_o=
+[
+ 1,1,0,0,
+ 1,1,0,0,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+var block_array_l=
+[
+ 0,0,1,0,
+ 1,1,1,0,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+var block_array_s=
+[
+ 0,1,1,0,
+ 1,1,0,0,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+
+var block_array=
+[
+ 0,0,0,0,
+ 1,1,1,1,
+ 0,0,0,0,
+ 0,0,0,0,
+];
+
+back_block_array=[]; //backup block array used in rotation
+
+var main_block_array=[]; //current array of block
+var main_block_width; //width of this current block
+var main_block_color; //color of main block
+var main_block_id //to identify block
+var main_block_x,main_block_y; //location of main block
+var block_x1,block_y1; //used to make backup of block location before testing valid moves
+
+ var next_block_x,next_block_y; //location new blocks with spawn
+
+
+//console.log(block_array_i);
+
+
+block_type=0;
+
+function spawn_block() //function that spawns new blocks
+{
+ var p; /*pointer to array which will be selected to copy to main block*/
+
+ console.log("spawn function\n");
+
+ if(block_type==0)
+ {
+  p=block_array_i;
+  main_block_color="#00FFFF";
+  main_block_width=4;
+  main_block_id='I';
+ }
+
+ /*copy another new block array into the current one*/
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   main_block_array[x+y*block_width]=p[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ next_block_x=(grid_width-main_block_width)/2;
+ next_block_y=0;
+
+ main_block_x=next_block_x;
+ main_block_y=next_block_y;
+
+}
+
+
+ spawn_block();
+
+var bx,by;
+
+function main()
+{
+
+
+
+
+ //ctx.fillStyle="#000000"; ctx.fillRect(0,0,width,height);
+
+ /*make backup of entire grid*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
+  {
+   tetris_grid_backup[x+y*grid_width]=tetris_grid[x+y*grid_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ /*make backup of block location*/
+ block_x1=main_block_x,block_y1=main_block_y;
+
+  /*copy block onto grid at it's current location*/
+  by=0;
+  while(by<block_width)
+  {
+   bx=0;
+   while(bx<block_width)
+   {
+    if(main_block_array[bx+by*block_width]!=0)
+    {
+     if( tetris_grid[main_block_x+bx+(main_block_y+by)*grid_width]!="#000000" )
+     {
+      console.log("Error: Block in Way\n");
+
+      /*because a collision has occurred. We restore everything back to the way it was before block was moved.*/
+
+      /*restore backup of block location*/
+      main_block_x=block_x1,main_block_y=block_y1;
+
+     /*Restore backup of entire grid*/
+     y=0;
+     while(y<grid_height)
+     {
+      x=0;
+      while(x<grid_width)
+      {
+       tetris_grid[x+y*grid_width]=tetris_grid_backup[x+y*grid_width];
+       x+=1;
+      }
+      y+=1;
+     }
+
+      break;}
+     else
+     {
+      tetris_grid[main_block_x+bx+(main_block_y+by)*grid_width]=main_block_color;
+     }
+    }
+    bx+=1;
+   }
+   by+=1;
+  }
+
+
+
+/*draw the grid*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
+  {
+   ctx.fillStyle=tetris_grid[x+y*grid_width];
+   ctx.fillRect(x*block_size,y*block_size,block_size,block_size);
+   x+=1;
+  }
+  y+=1;
+ }
+
+/*restore grid from backup*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
+  {
+   tetris_grid[x+y*grid_width]=tetris_grid_backup[x+y*grid_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+}
+//end of main function
+
+
+function pixel_on_grid(x,y)
+{
+ var r;
+ if(x<0){ console.log("Error: Negative X\n"); return 1;}
+ if(y<0){ console.log("Error: Negative Y\n"); return 1;}
+ if(x>=grid_width){ console.log("Error: X too high.\n"); return 1;}
+ if(y>=grid_height){ console.log("Error: Y too high.\n"); return 1;}
+ else
+ {
+  //r=tetris_grid[main_block_x+bx+(main_block_y+by)*grid_width];
+  r=tetris_grid[x+y*grid_width];
+
+  //console.log("x="+x+" y="+y+"\n");
+  //console.log(r+"\n");
+  if(r!="#000000"){return 1;}
+  else{return 0;}
+ }
+}
+
+/*checks whether or not the block collides with anything on the current field*/
+function tetris_check_move()
+{
+  by=0;
+  while(by<block_width)
+  {
+   bx=0;
+   while(bx<block_width)
+   {
+    if(main_block_array[bx+by*block_width]!=0)
+    {
+
+     if( pixel_on_grid(main_block_x+bx,main_block_y+by)!=0)
+     {
+
+      console.log("Error: Block in Way on Move Check.\n");
+
+      /*because a collision has occurred. We restore everything back to the way it was before block was moved.*/
+
+      /*restore backup of block location*/
+      main_block_x=block_x1,main_block_y=block_y1;
+
+     /*Restore backup of entire grid*/
+     y=0;
+     while(y<grid_height)
+     {
+      x=0;
+      while(x<grid_width)
+      {
+       tetris_grid[x+y*grid_width]=tetris_grid_backup[x+y*grid_width];
+       x+=1;
+      }
+      y+=1;
+     }
+
+      return 1;
+     }
+
+    }
+    bx+=1;
+   }
+   by+=1;
+  }
+
+ return 0;
+
+}
+
+
+var lines_cleared_last=0;
+var lines_cleared_total=0;
+var score=0;
+
+function tetris_clear_lines()
+{
+ var xcount,x1,y1;
+
+ lines_cleared=0;
+
+ y=grid_height;
+ while(y>0)
+ {
+  y-=1;
+
+  xcount=0;
+  x=0;
+  while(x<grid_width)
+  {
+   if(tetris_grid[x+y*grid_width]!="#000000"){xcount++;}
+   x+=1;
+  }
+
+  /*printf("row %d xcount %d\n",y,xcount);*/
+
+  if(xcount==grid_width)
+  {
+ 
+   y1=y;
+
+   /*printf("row %d line clear attempt.\n",y);*/
+
+   x1=0;
+   while(x1<grid_width)
+   {
+    tetris_grid[x1+y1*grid_width]="#000000";
+
+    x1++;
+   }
+   
+  
+   lines_cleared++;
+  }
+
+ }
+
+
+ lines_cleared_total+=lines_cleared;
+
+ /*printf("this line clear: %d\n",lines_cleared);
+ printf("total lines cleared: %d\n",lines_cleared_total);*/
+
+ /*scoring section*/
+ if(lines_cleared==1){score+=100;}
+ if(lines_cleared==2){score+=300;}
+ if(lines_cleared==3){score+=500;}
+ if(lines_cleared==4)
+ {
+  if(lines_cleared_last==4){score+=1200;}
+  else{score+=800;}
+ }
+
+ if(lines_cleared!=0)
+ {
+  lines_cleared_last=lines_cleared;
+ }
+
+}
+
+
+function tetris_fall_lines()
+{
+ var xcount,y1;
+
+/* printf("Time to make lines fall\n");*/
+
+ y=grid_height;
+ while(y>1)
+ {
+  y-=1;
+
+  xcount=0;
+  x=0;
+  while(x<grid_width)
+  {
+   if(tetris_grid[x+y*grid_width]!="#000000"){xcount++;}
+   x+=1;
+  }
+
+  /*printf("row %d xcount %d\n",y,xcount);*/
+
+  if(xcount==0)
+  {
+/*   printf("row %d is empty\n",y);*/
+
+   /*find first non empty row above empty row*/
+
+   y1=y;
+   while(y1>1)
+   {
+    y1--;
+    xcount=0;
+    x=0;
+    while(x<grid_width)
+    {
+     if(tetris_grid[x+y1*grid_width]!="#000000"){xcount++;}
+     x+=1;
+    }
+    if(xcount>0)
+    {
+/*     printf("row %d is not empty. Will copy to row %d.\n",y1,y);*/
+
+     x=0;
+
+     x=0;
+     while(x<grid_width)
+     {
+      tetris_grid[x+y*grid_width]=tetris_grid[x+y1*grid_width];
+      tetris_grid[x+y1*grid_width]="#000000";
+      x++;
+     }
+     break;
+    }
+   }
+
+  }
+
+ }
+
+}
+
+
+
+function tetris_set_block()
+{
+
+
+  /*draw block onto grid at it's current location*/
+  y=0;
+  while(y<block_width)
+  {
+   x=0;
+   while(x<block_width)
+   {
+    if(main_block_array[x+y*block_width]!=0)
+    {
+      tetris_grid[main_block_x+x+(main_block_y+y)*grid_width]=main_block_color; 
+    }
+    x+=1;
+   }
+   y+=1;
+  }
+
+
+
+ tetris_clear_lines();
+
+ if(lines_cleared_last>0){tetris_fall_lines();}
+
+ /*optionally increment block type for different block next time.*/
+ //block_type++;  block_type%=7;
+
+ spawn_block();
+
+}
+
+function tetris_move_down()
+{
+ //console.log("down function\n");
+ /*make backup of block location*/
+ block_x1=main_block_x,block_y1=main_block_y;
+ main_block_y+=1;
+ if(tetris_check_move()!=0)
+ {
+  console.log("Block is Finished.\n");
+  tetris_set_block();
+ }
+ main();
+}
+
+
+
+function tetris_move_right()
+{
+ //console.log("right function\n");
+ /*make backup of block location*/
+ block_x1=main_block_x,block_y1=main_block_y;
+ main_block_x+=1;
+ tetris_check_move();
+ main();
+}
+
+function tetris_move_left()
+{
+ //console.log("left function\n");
+ /*make backup of block location*/
+ block_x1=main_block_x,block_y1=main_block_y;
+ main_block_x-=1;
+ tetris_check_move();
+ main();
+}
+
+function tetris_move_up()
+{
+ //console.log("up function\n");
+ /*make backup of block location*/
+ block_x1=main_block_x,block_y1=main_block_y;
+ main_block_y-=1;
+ tetris_check_move();
+ main();
+}
+
+
+
+function block_rotate_right()
+{
+ var x1=0,y1=0;
+
+/*make backup of block location*/
+ block_x1=main_block_x,block_y1=main_block_y;
+
+ /*first backup block grid*/
+ y=0;
+ while(y<main_block_width)
+ {
+  x=0;
+  while(x<main_block_width)
+  {
+   back_block_array[x+y*block_width]=main_block_array[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ /*copy it from top to bottom to right to left(my own genius rotation trick)*/
+
+ x1=main_block_width;
+ y=0;
+ while(y<main_block_width)
+ {
+  x1--;
+  y1=0;
+  x=0;
+  while(x<main_block_width)
+  {
+   main_block_array[x1+y1*block_width]=back_block_array[x+y*block_width];
+   x+=1;
+   y1++;
+  }
+  y+=1;
+ }
+
+ /*if rotation caused collision, restore to the backup before rotate.*/
+ if(tetris_check_move()!=0)
+ {
+ 
+  y=0;
+  while(y<main_block_width)
+  {
+   x=0;
+   while(x<main_block_width)
+   {
+    main_block_array[x+y*block_width]=back_block_array[x+y*block_width];
+    x+=1;
+   }
+   y+=1;
+  }
+
+ }
+
+ main();
+}
+
+
+function block_rotate_left()
+{
+ var x1=0,y1=0;
+
+/*make backup of block location*/
+ block_x1=main_block_x,block_y1=main_block_y;
+
+ /*first backup block grid*/
+ y=0;
+ while(y<main_block_width)
+ {
+  x=0;
+  while(x<main_block_width)
+  {
+   back_block_array[x+y*block_width]=main_block_array[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ /*copy it from top to bottom to right to left(my own genius rotation trick)*/
+
+ x1=main_block_width;
+ y=0;
+ while(y<main_block_width)
+ {
+  x1--;
+  y1=0;
+  x=0;
+  while(x<main_block_width)
+  {
+   main_block_array[x+y*block_width]=back_block_array[x1+y1*block_width];
+   x+=1;
+   y1++;
+  }
+  y+=1;
+ }
+
+
+
+
+ /*if rotation caused collision, restore to the backup before rotate.*/
+ if(tetris_check_move()!=0)
+ {
+ 
+  y=0;
+  while(y<main_block_width)
+  {
+   x=0;
+   while(x<main_block_width)
+   {
+    main_block_array[x+y*block_width]=back_block_array[x+y*block_width];
+    x+=1;
+   }
+   y+=1;
+  }
+
+ }
+
+ main();
+}
+
+
+function keyboard(event)
+{
+ var key = event.key;
+ console.log(key);
+
+ switch(key)
+ {
+  case 'Escape':
+  //clearInterval(timer);
+  break;
+  case 'Enter':
+  //timer=setInterval(main,1000/fps);
+  break;
+
+  case 'd':
+  case 'ArrowRight':
+  tetris_move_right();
+  break;
+  case 'a':
+  case 'ArrowLeft':
+  tetris_move_left();
+  break;
+  case 'w':
+  case 'ArrowUp':
+  tetris_move_up();
+  break;
+  case 's':
+  case 'ArrowDown':
+  tetris_move_down();
+  break;
+ 
+  case 'x':
+  block_rotate_right();
+  break;
+
+  case 'z':
+  block_rotate_left();
+  break;
+
+
+
+
+ }
+}
+
+document.addEventListener("keydown",keyboard);
+
+function mouse(event)
+{
+ var x = event.offsetX;
+ var y = event.offsetY;
+ var button=event.button;
+ console.log("x="+x+" y="+y);
+ console.log("button="+button);
+
+}
+
+cvs.addEventListener("mousedown",mouse);
+
+main();
+//var timer=setInterval(main,1000/fps);
+
+</script>
+
+<p>
+This page is a port of my game Long Boi which is named after the long I blocks in Tetris because of my roommate River Black Rose. The original was written in C but this Javascript Edition runs in a web browser.
+</p>
+
+<pre>
+This example accepts user input by keypresses.
+
+Keys = Action
+w = move up
+a = move left
+s = move down
+d = move right
+z = rotate counter clockwise
+x = rotate clockwise
+
+</pre>
+
+<p>
+I learned to use HTML5 canvas from<br>
+<a href="https://www.w3schools.com/html/html5_canvas.asp">https://www.w3schools.com/html/html5_canvas.asp</a> 
+</p>
+
+<p>
+Email me: chastitywhiterose@gmail.com if you have any questions or suggestions for what I might do with this.
+</p>
+
+</body>
+</html>
+
+<!--
+This page is part of my website.
+-->
