@@ -423,7 +423,7 @@ function tetris_fall_lines()
 /* printf("Time to make lines fall\n");*/
 
  y=grid_height;
- while(y>1)
+ while(y>0)
  {
   y-=1;
 
@@ -444,7 +444,7 @@ function tetris_fall_lines()
    /*find first non empty row above empty row*/
 
    y1=y;
-   while(y1>1)
+   while(y1>0)
    {
     y1--;
     xcount=0;
