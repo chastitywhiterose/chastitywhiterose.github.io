@@ -410,10 +410,11 @@ void gl_bbm_save_frame()
   sprintf(command,"magick convert %s -colorspace rgb %s",framefilename,framefilename1);
 
   system(command);
+  printf("%s\n",command);
   if( remove( framefilename ) != 0 ){printf("could not delete file %s\n",framefilename);}
  }
 
- printf("%s\n",command);
+
 
  
  frame++;

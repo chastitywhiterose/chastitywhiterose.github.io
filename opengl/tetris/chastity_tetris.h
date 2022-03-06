@@ -18,6 +18,9 @@ int hold_used=0;
 int block_array_hold[16],hold_block_width,hold_block_color,hold_block_id=0; /*the hold block storage*/
 int block_array_hold1[16],hold1_block_width,hold1_block_color,hold1_block_id; /*the second hold block storage*/
 
+int moves=0; /*number of valid moves*/
+int moves_tried=0; /*number of attempted moves*/
+
 
 uint32_t bx,by;
 
@@ -350,8 +353,8 @@ void mode_tetris()
  glRecti(0*block_size,0*block_size,block_size,height*block_size);
  glRecti(grid_offset_x+grid_width*block_size,0*block_size,grid_offset_x+grid_width*block_size+block_size,height*block_size);
 
- /*
-   glRasterPos2i(fontsize,fontsize);
+ 
+/*   glRasterPos2i(fontsize,fontsize);
    sprintf(text,"%d",frame_displayed);
    ftglRenderFont(font,text,FTGL_RENDER_ALL);
  */
@@ -387,6 +390,16 @@ void mode_tetris()
  sprintf(text,"Hold: %c",hold_block_id);
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
 
+
+ /*glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*8);
+ sprintf(text,"Moves: %d",moves);
+ ftglRenderFont(font,text, FTGL_RENDER_ALL);*/
+
+/* glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*9);
+ sprintf(text,"Moves Tried: %d",moves_tried);
+ ftglRenderFont(font,text, FTGL_RENDER_ALL);
+*/
+
  glRasterPos2i(grid_width*block_size+fontsize*2,height-fontsize*1);
  ftglRenderFont(font,"Chastity White Rose", FTGL_RENDER_ALL);
  
@@ -407,7 +420,7 @@ void mode_tetris()
  }
  
  /*optionally save frame as file*/
- if(0)
+ if(moves>frame)
  {
   gl_bbm_save_frame(); if(frame==framelimit){glfwSetWindowShouldClose(window,GLFW_TRUE);}
  }

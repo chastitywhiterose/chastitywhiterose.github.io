@@ -16,7 +16,10 @@ int pixel_on_grid(int x,int y)
 /*checks whether or not the block collides with anything on the current field*/
 int tetris_check_move()
 {
- int x,y; 
+ int x,y;
+
+ moves_tried++; /*move attempted*/
+
 
   by=0;
   while(by<4)
@@ -58,6 +61,7 @@ int tetris_check_move()
    by+=1;
   }
 
+ moves++; /*move successful*/
  return 0;
 
 }
@@ -146,7 +150,7 @@ void tetris_clear_lines()
 }
 
 
-/*next function to finish*/
+/*lines fall down to previously cleared line spaces*/
 
 void tetris_fall_lines()
 {
@@ -155,7 +159,7 @@ void tetris_fall_lines()
 /* printf("Time to make lines fall\n");*/
 
  y=grid_height;
- while(y>1)
+ while(y>0)
  {
   y-=1;
 
@@ -176,7 +180,7 @@ void tetris_fall_lines()
    /*find first non empty row above empty row*/
 
    y1=y;
-   while(y1>1)
+   while(y1>0)
    {
     y1--;
     xcount=0;
@@ -209,7 +213,12 @@ void tetris_fall_lines()
 
 }
 
-
+/*this function controls whether or not the block index changes.*/
+void tetris_next_block()
+{
+ /*optionally increment block type for different block next time.*/
+ /*block_type++;  block_type%=7;*/
+}
 
 
 void tetris_set_block()
@@ -239,9 +248,8 @@ void tetris_set_block()
 
  if(lines_cleared_last>0){tetris_fall_lines();}
 
- /*optionally increment block type for different block next time.*/
- block_type++;  block_type%=7;
 
+ tetris_next_block();
  spawn_block();
 
 
@@ -253,7 +261,12 @@ void tetris_move_down()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_y+=1;
- if(tetris_check_move()!=0){ /*printf("Block is finished\n");*/ tetris_set_block();}
+ if(tetris_check_move()!=0)
+ {
+  /*printf("Block is finished\n");*/
+  tetris_set_block();
+  moves++; /*moves normally wouldn't be incremented because move check fails but setting a block is actually a valid move.*/
+ }
 }
 
 
@@ -436,8 +449,7 @@ if(hold_used==0) /*just store block if nothing there*/
   y+=1;
  }
 
- /*optionally increment block type for different block next time.*/
- block_type++;  block_type%=7;
+ tetris_next_block();
  spawn_block();
 
  hold_used=1;
