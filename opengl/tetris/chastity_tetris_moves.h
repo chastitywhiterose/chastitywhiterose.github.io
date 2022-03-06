@@ -133,13 +133,35 @@ void tetris_clear_lines()
  printf("total lines cleared: %d\n",lines_cleared_total);*/
 
  /*scoring section*/
- if(lines_cleared==1){score+=100;}
- if(lines_cleared==2){score+=300;}
- if(lines_cleared==3){score+=500;}
+ if(lines_cleared==1)
+ {
+  if(last_move_spin==1)
+  {
+   if(back_to_back==1){score+=1200;}
+   else{score+=800;back_to_back=1;}
+  }
+  else
+  {
+   score+=100;back_to_back=0;
+  }
+ }
+ if(lines_cleared==2)
+ {
+  if(last_move_spin==1)
+  {
+   if(back_to_back==1){score+=1800;}
+   else{score+=1200;back_to_back=1;}
+  }
+  else
+  {
+   score+=300;back_to_back=0;
+  }
+ }
+ if(lines_cleared==3){score+=500;back_to_back=0;}
  if(lines_cleared==4)
  {
-  if(lines_cleared_last==4){score+=1200;}
-  else{score+=800;}
+  if(back_to_back==1){score+=1200;}
+  else{score+=800;back_to_back=1;}
  }
 
  if(lines_cleared!=0)
@@ -217,7 +239,7 @@ void tetris_fall_lines()
 void tetris_next_block()
 {
  /*optionally increment block type for different block next time.*/
- /*block_type++;  block_type%=7;*/
+ block_type++;  block_type%=blocks_used;
 }
 
 
@@ -267,6 +289,11 @@ void tetris_move_down()
   tetris_set_block();
   moves++; /*moves normally wouldn't be incremented because move check fails but setting a block is actually a valid move.*/
  }
+ else
+ {
+  last_move_spin=0;
+ }
+
 }
 
 
@@ -277,7 +304,11 @@ void tetris_move_up()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_y-=1;
- tetris_check_move();
+ if(tetris_check_move()==0)
+ {
+  last_move_spin=1;
+ }
+;
 }
 
 
@@ -287,7 +318,10 @@ void tetris_move_right()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_x+=1;
- tetris_check_move();
+ if(tetris_check_move()==0)
+ {
+  last_move_spin=1;
+ }
 }
 
 /*all things about moving left*/
@@ -296,7 +330,10 @@ void tetris_move_left()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_x-=1;
- tetris_check_move();
+ if(tetris_check_move()==0)
+ {
+  last_move_spin=1;
+ }
 }
 
 
@@ -354,7 +391,11 @@ void block_rotate_right()
    }
    y+=1;
   }
-
+  
+ }
+ else
+ {
+  last_move_spin=1;
  }
 
 }
@@ -415,6 +456,11 @@ void block_rotate_left()
    y+=1;
   }
  }
+ else
+ {
+  last_move_spin=1;
+ }
+
 
 }
 
@@ -459,7 +505,7 @@ if(hold_used==0) /*just store block if nothing there*/
 else
 {
 
- printf("Swap with previous hold block.\n");
+ /*printf("Swap with previous hold block.\n");*/
 
  hold1_block_width=hold_block_width; hold1_block_color=hold_block_color; hold1_block_id=hold_block_id; /*put the hold block into temp storage*/
  hold_block_width=current_block_width; hold_block_color=block_color; hold_block_id=current_block_id;      /*place current block into the hold spot*/
@@ -472,7 +518,7 @@ else
   x=0;
   while(x<block_width)
   {
-   block_array_hold1[x+y*block_width]=block_array_hold[x+y*block_width]; 
+   block_array_hold1[x+y*block_width]=block_array_hold[x+y*block_width];
    block_array_hold[x+y*block_width]=block_array[x+y*block_width];
    block_array[x+y*block_width]=block_array_hold1[x+y*block_width];
    x+=1;

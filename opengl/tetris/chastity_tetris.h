@@ -20,6 +20,8 @@ int block_array_hold1[16],hold1_block_width,hold1_block_color,hold1_block_id; /*
 
 int moves=0; /*number of valid moves*/
 int moves_tried=0; /*number of attempted moves*/
+int last_move_spin=0;
+int back_to_back=0;
 
 
 uint32_t bx,by;
@@ -221,16 +223,8 @@ void mode_tetris()
  */
 
 
- /*set size and position of polygon*/
- polygon_cx=width*13/16;
- polygon_cy=height/2;
- polygon_radius=height/3;
-  /*set the current polygon function to filled star*/
- polyfunc=gl_bbm_polygon2;
- 
- framelimit=fps*60*60;
 
-  glColor3f(1.0,1.0,1.0); /*color of the polygon*/
+ framelimit=fps*60*60;
 
 
   block_x=next_block_x;block_y=next_block_y;
@@ -344,7 +338,7 @@ void mode_tetris()
   y+=1;
  }
 
-
+  /*printf("last_move_spin==%d\n",last_move_spin);*/
 
  /*change color back to white before drawing text*/
  glColor3f(1.0,1.0,1.0);
@@ -372,7 +366,7 @@ void mode_tetris()
 
 
  glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*1);
- ftglRenderFont(font,"Long Boi Game", FTGL_RENDER_ALL);
+ ftglRenderFont(font,gamename, FTGL_RENDER_ALL);
 
  glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*3);
  sprintf(text,"Lines: %d",lines_cleared_total);
@@ -400,11 +394,13 @@ void mode_tetris()
  ftglRenderFont(font,text, FTGL_RENDER_ALL);
 */
 
- glRasterPos2i(grid_width*block_size+fontsize*2,height-fontsize*1);
+ glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*10);
  ftglRenderFont(font,"Chastity White Rose", FTGL_RENDER_ALL);
+
+ glRasterPos2i(grid_width*block_size+fontsize*2,fontsize*12);
+ ftglRenderFont(font,"River Black Rose", FTGL_RENDER_ALL);
+
  
-/* gl_bbm_checker();*/
- /*polyfunc();*/
  
  glFlush();
   
@@ -420,12 +416,12 @@ void mode_tetris()
  }
  
  /*optionally save frame as file*/
- if(moves>frame)
+ if(moves<frame)
  {
   gl_bbm_save_frame(); if(frame==framelimit){glfwSetWindowShouldClose(window,GLFW_TRUE);}
  }
  
-  polygon_radians+=PI/180;
+
   
   /*check for keypresses or other events*/
   glfwPollEvents();
