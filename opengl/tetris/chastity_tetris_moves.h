@@ -545,10 +545,12 @@ int saved_block_type;
 int saved_block_array[16],saved_main_block_width,saved_block_color,saved_block_id,saved_block_x,saved_block_y; /*to store all details of main block*/
 
 int saved_hold_block_array[16],saved_hold_block_width,saved_hold_block_color,saved_hold_block_id,saved_hold_block_x,saved_hold_block_y; /*to store all details of main block*/
+int saved_hold_used;
 
+int saved_score;
+int saved_lines_cleared_total;
 
 int save_exist=0;
-
 
 /*
  a special function which saves all the importantdata in the game. This allows reloading to a previous position when I make a mistake.
@@ -613,6 +615,9 @@ void tetris_save_state()
 
  saved_moves=moves;
  saved_frame=frame;
+ saved_hold_used=hold_used;
+ saved_score=score;
+ saved_lines_cleared_total=lines_cleared_total;
 
 
  printf("Game Saved at move %d\n",moves);
@@ -689,6 +694,10 @@ if(save_exist==0)
 
  moves=saved_moves;
  frame=saved_frame;
+ hold_used=saved_hold_used;
+ score=saved_score;
+ lines_cleared_total=saved_lines_cleared_total;
+
 
  printf("Game Loaded at move %d\n",moves);
 

@@ -2,42 +2,57 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Chastity's Game: Long Boi</title>
+<title>Chastity's Game</title>
 
 <link rel="stylesheet" href="../../chastity.css">
 
 </head>
 <body>
 
+<p>
+I have finally made my own video game. It is basically a Tetris clone with a few features. I add new features to it occasionally. There are two versions of it: Long Boi and Chaste Tris.
+</p>
+
+
 <h1>Long Boi</h1>
 
-<iframe width="1280" height="720" src="https://www.youtube.com/embed/aZhceiSksfE"> Long Boy demo video</iframe>
+<iframe width="1280" height="720" src="https://www.youtube.com/embed/3GGgNta6UuQ"> Long Boy demo video</iframe>
 
 <p>
 Long Boi is a Tetris clone that I wrote which contains only the long block. Because of this, it's simpler to code than standard Tetris but at the same time is a complete game.
 </p>
 
+<h1>Chaste Tris</h1>
+
+<iframe width="1280" height="720" src="https://www.youtube.com/embed/mfs-WH6MeJ4"> Chaste Tris demo video</iframe>
 
 <p>
-The source code files required to compile it are all available here:<br>
+Chaste Tris is much more of a Tetris clone than even Long Boi. The blocks are not really random but it still allows for holding pieces as most modern Tetris games do.
+</p>
+
+<p>
+The same source code files required to compile both games are all available here:<br>
 <br>
 <a href="./main.c">main.c</a> <br>
 <a href="./makefile">makefile</a> <br>
 <a href="./chastity_tetris.h">chastity_tetris.h</a> <br>
 <a href="./chastity_tetris_moves.h">chastity_tetris_moves.h</a> <br>
 <a href="./gl_bbmio.h">gl_bbmio.h</a> <br>
-<a href="gl_bbm_polygon.h">gl_bbm_polygon.h</a> <br>
 <a href="gl_ftgl.h">gl_ftgl.h</a> <br>
 <a href="readme.txt">readme.txt</a> <br>
 
 </p>
 
 <p>
-All graphics are done with the glfw library, legacy opengl, and ftgl for rendering the fonts. As such, it's no easy task to install all the required tools unless you're running Linux and have a package manager that can install them with a few commands. The makefile contains the commands required to compile on Linux or inside <a href="https://www.msys2.org/">msys2</a> running under Windows.
+Technically not all functions in those source files are even being used. A much smaller and cleaner version of the code is possible, although it would run identically to how it does now. I could easily talk for hours about all the details of the code and I will make more videos as I find time.
 </p>
 
 <p>
-I have a <a href="https://1drv.ms/u/s!Aovs14QF6QY_o3RG0mzoQiRhuapU">Windows version</a> available to download as well. However most of the development was done on <a href="https://ubuntu.com/">Ubuntu Linux</a> because it is a lot easier to compile C code.
+All graphics are done with the glfw library, legacy opengl, and ftgl for rendering the fonts. As such, it's no easy task to install all the required tools unless you're running Linux and have a package manager that can install them with a few commands. The makefile contains the commands required to compile on Linux or inside <a href="https://www.msys2.org/">msys2</a> running under Windows. Most of the development was done on <a href="https://ubuntu.com/">Ubuntu Linux</a> because it is a lot easier to compile C code.
+</p>
+
+<p>
+I have a playable <a href="https://1drv.ms/u/s!Aovs14QF6QY_o3RG0mzoQiRhuapU">Windows version</a> available to download as well. The archive contains two executables and the required DLL files for them to run. Please try it out and let me know if you like the game.
 </p>
 
 </body>
