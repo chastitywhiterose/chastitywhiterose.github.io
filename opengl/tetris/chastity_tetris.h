@@ -186,6 +186,21 @@ void spawn_block()
 
 }
 
+void chaste_tris_info()
+{
+ printf("Welcome to the game \"%s\" by Chastity White Rose\n",gamename);
+ printf("Email: chastitywhiterose@gmail.com for any questions!\n\n");
+
+ printf("This game was written in the C programming language by Chastity White Rose.\nThe inspiration came from a talk with River Black Rose. There are two versions.\n");
+ printf("\"Long Boi\" containing only I blocks and\n\"Chaste Tris\" when all 7 Tetrominoes are present\n");
+ printf("And of course this game is heavily inspired by Tetris created by Alexey Pajitnov in 1984\n\n");
+
+ printf("Because I love playing Tetris, I used all my programming skills to make a simple game that I can play with a few features that I wish other Tetris games had.\n");
+ printf("There is infinite time to place the blocks because there is no gravity.\n");
+
+
+}
+
 
 void mode_tetris()
 {
@@ -199,7 +214,9 @@ void mode_tetris()
  next_block_x=(grid_width-current_block_width)/2;
  next_block_y=0;
 
- printf("block_size==%d\n",block_size);
+ /*printf("block_size==%d\n",block_size);*/
+
+ chaste_tris_info();
 
  spawn_block();
 
@@ -415,7 +432,12 @@ void mode_tetris()
   }
  }
  
- /*optionally save frame as file*/
+ /*
+ optionally save frame as file
+ make comparison moves>=frame to ensure frames are only saved for successful moves.
+ use moves<frame to make sure that no frames are ever saved
+*/
+
  if(moves<frame)
  {
   gl_bbm_save_frame(); if(frame==framelimit){glfwSetWindowShouldClose(window,GLFW_TRUE);}

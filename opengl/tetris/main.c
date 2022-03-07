@@ -90,6 +90,12 @@ tetris_move_right();
    block_hold();
    break;
 
+   case GLFW_KEY_COMMA:
+   tetris_load_state();
+   break;
+   case GLFW_KEY_PERIOD:
+   tetris_save_state();
+   break;
 
   }
 
@@ -120,9 +126,7 @@ int main(int argc, char **argv)
   sprintf(gamename,"Chaste Tris");
  }
 
- printf("Welcome to the game \"%s\" by Chastity White Rose\n",gamename);
 
- printf("Email: chastitywhiterose@gmail.com for any questions!\n");
 
 
  glfwSetErrorCallback(error_callback);

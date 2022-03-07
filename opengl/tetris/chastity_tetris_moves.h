@@ -477,7 +477,7 @@ void block_hold()
 if(hold_used==0) /*just store block if nothing there*/
 {
 
- printf("hold block used first time.\n");
+ /*printf("hold block used first time.\n");*/
 
  hold_block_width=current_block_width;
  hold_block_color=block_color;
@@ -528,9 +528,171 @@ else
  }
 
 }
-
-
- 
 }
+
+
+
+
+
+uint32_t saved_tetris_grid[tetris_array_size];
+int saved_moves; /*number of valid moves*/
+int saved_frame;  /*current animation frame*/
+int last_move_spin; /*was the last move a t spin?*/
+int back_to_back; /*back to back score bonus*/
+
+int saved_block_type;
+
+int saved_block_array[16],saved_main_block_width,saved_block_color,saved_block_id,saved_block_x,saved_block_y; /*to store all details of main block*/
+
+int saved_hold_block_array[16],saved_hold_block_width,saved_hold_block_color,saved_hold_block_id,saved_hold_block_x,saved_hold_block_y; /*to store all details of main block*/
+
+
+int save_exist=0;
+
+
+/*
+ a special function which saves all the importantdata in the game. This allows reloading to a previous position when I make a mistake.
+*/
+void tetris_save_state()
+{
+ int x,y;
+
+ /*make backup of entire grid*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
+  {
+   saved_tetris_grid[x+y*grid_width]=tetris_grid[x+y*grid_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ /*all attributes of main block*/
+ saved_block_type=block_type;
+ saved_main_block_width=current_block_width;
+ saved_block_color=block_color;
+ saved_block_id=current_block_id;
+ saved_block_x=block_x;
+ saved_block_y=block_y;
+
+ /*backup main block grid*/
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   saved_block_array[x+y*block_width]=block_array[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+
+ /*all attributes of hold block as well*/
+ saved_hold_block_width=hold_block_width;
+ saved_hold_block_color=hold_block_color;
+ saved_hold_block_id=hold_block_id;
+
+ /*backup hold block grid*/
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   saved_hold_block_array[x+y*block_width]=block_array_hold[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+
+ saved_moves=moves;
+ saved_frame=frame;
+
+
+ printf("Game Saved at move %d\n",moves);
+ save_exist=1;
+}
+
+
+/*
+ a special function which loads the data previously saved. This allows reloading to a previous position when I make a mistake.
+*/
+void tetris_load_state()
+{
+ int x,y;
+
+
+if(save_exist==0)
+{
+ printf("No save exists yet.\n");
+ return;
+}
+
+ /*restore backup of entire grid*/
+ y=0;
+ while(y<grid_height)
+ {
+  x=0;
+  while(x<grid_width)
+  {
+   tetris_grid[x+y*grid_width]=saved_tetris_grid[x+y*grid_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ /*all attributes of main block*/
+ block_type=saved_block_type;
+ current_block_width=saved_main_block_width;
+ block_color=saved_block_color;
+ current_block_id=saved_block_id;
+ block_x=saved_block_x;
+ block_y=saved_block_y;
+
+ /*restore backup of main block grid*/
+ y=0;
+ while(y<current_block_width)
+ {
+  x=0;
+  while(x<current_block_width)
+  {
+   block_array[x+y*block_width]=saved_block_array[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+
+ /*all attributes of hold block as well*/
+ hold_block_width=saved_hold_block_width;
+ hold_block_color=saved_hold_block_color;
+ hold_block_id=saved_hold_block_id;
+
+ /*restore backup of hold block grid*/
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   block_array_hold[x+y*block_width]=saved_hold_block_array[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ moves=saved_moves;
+ frame=saved_frame;
+
+ printf("Game Loaded at move %d\n",moves);
+
+}
+
 
 
