@@ -347,10 +347,10 @@ void block_rotate_right()
 
  /*first backup block grid*/
  y=0;
- while(y<current_block_width)
+ while(y<block_width)
  {
   x=0;
-  while(x<current_block_width)
+  while(x<block_width)
   {
    block_array_backup[x+y*block_width]=block_array[x+y*block_width];
    x+=1;
@@ -411,10 +411,10 @@ void block_rotate_left()
 
  /*first backup block grid*/
  y=0;
- while(y<current_block_width)
+ while(y<block_width)
  {
   x=0;
-  while(x<current_block_width)
+  while(x<block_width)
   {
    block_array_backup[x+y*block_width]=block_array[x+y*block_width];
    x+=1;
@@ -662,10 +662,10 @@ if(save_exist==0)
 
  /*restore backup of main block grid*/
  y=0;
- while(y<current_block_width)
+ while(y<block_width)
  {
   x=0;
-  while(x<current_block_width)
+  while(x<block_width)
   {
    block_array[x+y*block_width]=saved_block_array[x+y*block_width];
    x+=1;

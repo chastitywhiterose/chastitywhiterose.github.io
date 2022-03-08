@@ -409,7 +409,7 @@ void gl_bbm_save_frame()
 /*  sprintf(command,"magick convert %s -colorspace lineargray %s",framefilename,framefilename1);*/
   /*sprintf(command,"magick convert %s -colorspace rgb %s",framefilename,framefilename1);*/
 
- sprintf(command,"convert %s -colorspace rgb %s",framefilename,framefilename1);
+ sprintf(command,"gm convert %s %s",framefilename,framefilename1);
 
   system(command);
   printf("%s\n",command);
