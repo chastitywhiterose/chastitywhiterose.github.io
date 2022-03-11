@@ -1,0 +1,1 @@
+I am in a slow process of cleaning up  my code and making variable names consistent. The cleaner the code is the better it can be made to work with other libaries and/or programming languages. The goal is for it to be able to load images and not only draw colored squares.
