@@ -23,7 +23,8 @@ int block_array_hold1[16],hold1_block_width,hold1_block_color,hold1_block_id; /*
 
 int moves=0; /*number of valid moves*/
 int moves_tried=0; /*number of attempted moves*/
-int last_move_spin=0;
+int last_move_spin=0; /*was the last move a t spin?*/
+int last_move_fail; /*did the last move fail?*/
 int back_to_back=0;
 
 
@@ -487,7 +488,9 @@ void tetris_move_down()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_y+=1;
- if(tetris_check_move()!=0)
+
+ last_move_fail=tetris_check_move();
+ if(last_move_fail)
  {
   /*printf("Block is finished\n");*/
   tetris_set_block();
@@ -497,6 +500,8 @@ void tetris_move_down()
  {
   last_move_spin=0;
  }
+
+ last_move_fail=0; /*because moving down is always a valid operation, the fail variable should be set to 0*/
 
  fputc(move_id,fp); /*moving down is always a valid move either for setting a block or moving it down*/
 }
@@ -509,7 +514,8 @@ void tetris_move_up()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_y-=1;
- if(tetris_check_move()==0)
+ last_move_fail=tetris_check_move();
+ if(!last_move_fail)
  {
   last_move_spin=0;
   fputc(move_id,fp);
@@ -524,7 +530,8 @@ void tetris_move_right()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_x+=1;
- if(tetris_check_move()==0)
+ last_move_fail=tetris_check_move();
+ if(!last_move_fail)
  {
   last_move_spin=0;
   fputc(move_id,fp);
@@ -537,7 +544,8 @@ void tetris_move_left()
  /*make backup of block location*/
  block_x1=block_x,block_y1=block_y;
  block_x-=1;
- if(tetris_check_move()==0)
+ last_move_fail=tetris_check_move();
+ if(!last_move_fail)
  {
   last_move_spin=0;
   fputc(move_id,fp);
@@ -545,8 +553,8 @@ void tetris_move_left()
 }
 
 
-
-void block_rotate_right()
+/*basic (non SRS) rotation system*/
+void block_rotate_right_basic()
 {
  int x=0,y=0,x1=0,y1=0;
 
@@ -567,6 +575,7 @@ void block_rotate_right()
  }
 
  /*copy it from top to bottom to right to left(my own genius rotation trick)*/
+ /*same as in the left rotation function by x,y and x1,y1 are swapped in the assignment*/
 
  x1=current_block_width;
  y=0;
@@ -585,7 +594,8 @@ void block_rotate_right()
  }
 
  /*if rotation caused collision, restore to the backup before rotate.*/
- if(tetris_check_move()!=0)
+ last_move_fail=tetris_check_move();
+ if(last_move_fail)
  {
  
   y=0;
@@ -610,8 +620,211 @@ void block_rotate_right()
 }
 
 
+/*
+based on super rotation system
 
-void block_rotate_left()
+https://harddrop.com/wiki/SRS
+
+not identical but close enough for my purposes
+
+for whatever reason this function is not working as expected. my game will revert back to using the basic rotate function until I solve this.
+
+*/
+void block_rotate_right_super()
+{
+ int x=0,y=0,x1=0,y1=0;
+
+/*make backup of block location*/
+ block_x1=block_x,block_y1=block_y;
+
+ /*first backup block grid*/
+ y=0;
+ while(y<block_width)
+ {
+  x=0;
+  while(x<block_width)
+  {
+   block_array_backup[x+y*block_width]=main_block_array[x+y*block_width];
+   x+=1;
+  }
+  y+=1;
+ }
+
+ /*copy it from top to bottom to right to left(my own genius rotation trick)*/
+ /*same as in the left rotation function by x,y and x1,y1 are swapped in the assignment*/
+
+ x1=current_block_width;
+ y=0;
+ while(y<current_block_width)
+ {
+  x1--;
+  y1=0;
+  x=0;
+  while(x<current_block_width)
+  {
+   main_block_array[x1+y1*block_width]=block_array_backup[x+y*block_width];
+   x+=1;
+   y1++;
+  }
+  y+=1;
+ }
+
+ /*first try basic rotation as in my original function*/
+ last_move_fail=tetris_check_move(); /*test 1*/
+
+/*tests for 0->R for blocks J,L,S,T,Z*/
+ if(last_move_fail)
+ {
+  printf("test 1 failed\n");
+  block_x=block_x1-1;
+  block_y=block_y1;
+  last_move_fail=tetris_check_move(); /*test 2*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 2 failed\n");
+  block_x=block_x1-1;
+  block_y=block_y1-1;
+  last_move_fail=tetris_check_move(); /*test 3*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 3 failed\n");
+  block_x=block_x1;
+  block_y=block_y1+2;
+  last_move_fail=tetris_check_move(); /*test 4*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 4 failed\n");
+  block_x=block_x1-1;
+  block_y=block_y1+2;
+  last_move_fail=tetris_check_move(); /*test 5*/
+ }
+
+/*tests for R->2 for blocks J,L,S,T,Z*/
+ if(last_move_fail)
+ {
+  printf("test 5 failed\n");
+  block_x=block_x1+1;
+  block_y=block_y1;
+  last_move_fail=tetris_check_move(); /*test 6*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 6 failed\n");
+  block_x=block_x1+1;
+  block_y=block_y1+1;
+  last_move_fail=tetris_check_move(); /*test 7*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 7 failed\n");
+  block_x=block_x1;
+  block_y=block_y1-2;
+  last_move_fail=tetris_check_move(); /*test 8*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 8 failed\n");
+  block_x=block_x1+1;
+  block_y=block_y1-2;
+  last_move_fail=tetris_check_move(); /*test 9*/
+ }
+
+
+/*tests for 2->L for blocks J,L,S,T,Z*/
+ if(last_move_fail)
+ {
+  printf("test 9 failed\n");
+  block_x=block_x1+1;
+  block_y=block_y1;
+  last_move_fail=tetris_check_move(); /*test 10*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 10 failed\n");
+  block_x=block_x1+1;
+  block_y=block_y1-1;
+  last_move_fail=tetris_check_move(); /*test 11*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 11 failed\n");
+  block_x=block_x1;
+  block_y=block_y1+2;
+  last_move_fail=tetris_check_move(); /*test 12*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 12 failed\n");
+  block_x=block_x1+1;
+  block_y=block_y1+2;
+  last_move_fail=tetris_check_move(); /*test 13*/
+ }
+
+
+/*tests for L->0 for blocks J,L,S,T,Z*/
+ if(last_move_fail)
+ {
+  printf("test 13 failed\n");
+  block_x=block_x1-1;
+  block_y=block_y1;
+  last_move_fail=tetris_check_move(); /*test 14*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 14 failed\n");
+  block_x=block_x1-1;
+  block_y=block_y1+1;
+  last_move_fail=tetris_check_move(); /*test 15*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 15 failed\n");
+  block_x=block_x1;
+  block_y=block_y1-2;
+  last_move_fail=tetris_check_move(); /*test 16*/
+ }
+ if(last_move_fail)
+ {
+  printf("test 16 failed\n");
+  block_x=block_x1-1;
+  block_y=block_y1-2;
+  last_move_fail=tetris_check_move(); /*test 17*/
+ }
+
+
+ /*if all tests have failed at this point, restore everything to the way it was before rotation attempted*/
+ if(last_move_fail)
+ {
+  block_x=block_x1;
+  block_y=block_y1;
+ 
+  y=0;
+  while(y<block_width)
+  {
+   x=0;
+   while(x<block_width)
+   {
+    main_block_array[x+y*block_width]=block_array_backup[x+y*block_width];
+    x+=1;
+   }
+   y+=1;
+  }
+  
+ }
+ else
+ {
+  last_move_spin=1;
+  fputc(move_id,fp);
+ }
+
+}
+
+
+/*basic (non SRS) rotation system*/
+void block_rotate_left_basic()
 {
  int x=0,y=0,x1=0,y1=0;
 
@@ -632,6 +845,7 @@ void block_rotate_left()
  }
 
  /*copy it from top to bottom to right to left(my own genius rotation trick)*/
+/*same as in the right rotation function by x,y and x1,y1 are swapped in the assignment*/
 
  x1=current_block_width;
  y=0;
@@ -650,7 +864,8 @@ void block_rotate_left()
  }
 
  /*if rotation caused collision, restore to the backup before rotate.*/
- if(tetris_check_move()!=0)
+ last_move_fail=tetris_check_move();
+ if(last_move_fail)
  {
  
   y=0;
@@ -749,7 +964,6 @@ void block_hold()
 int saved_tetris_grid[tetris_array_size];
 int saved_moves; /*number of valid moves*/
 int saved_frame;  /*current animation frame*/
-int last_move_spin; /*was the last move a t spin?*/
 int back_to_back; /*back to back score bonus*/
 
 int move_log_position;

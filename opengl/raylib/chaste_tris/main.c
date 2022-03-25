@@ -36,14 +36,16 @@ void keyboard()
   move_id='Z';
   sprintf(movetext,"Left Rotate");
   printf("%s\n",movetext);
-  block_rotate_left();
+  block_rotate_left_basic();
+  printf("last_move_fail==%d\n",last_move_fail);
  }
  if(IsKeyPressed(KEY_X))
  {
   move_id='X';
   sprintf(movetext,"Right Rotate");
   printf("%s\n",movetext);
-  block_rotate_right();
+  block_rotate_right_basic();
+  printf("last_move_fail==%d\n",last_move_fail);
  }
 
  if(IsKeyPressed(KEY_C))
@@ -144,8 +146,8 @@ void next_file_input()
   if(c=='A'){tetris_move_left();}
   if(c=='D'){tetris_move_right();}
 
-  if(c=='Z'){block_rotate_left();}
-  if(c=='X'){block_rotate_right();}
+  if(c=='Z'){block_rotate_left_basic();}
+  if(c=='X'){block_rotate_right_basic();}
   if(c=='C'){block_hold();}
 
  }
@@ -361,7 +363,7 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
  use moves<frame to make sure that no frames are ever saved
 */
 
- if(moves<frame)
+ if(moves>=frame)
  {
   TakeScreenshot_frame();
  }
@@ -369,6 +371,9 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
 
  /*optionally, get input from another file instead of keyboard if I have this enabled.*/
  //next_file_input();
+
+
+
 
     
  }
@@ -418,7 +423,8 @@ while(!WindowShouldClose()) /*loop runs until key pressed*/
 
  EndDrawing();
 }
- //CloseWindow();
+/*optionally, close the window and end program after start screen*/
+ //CloseWindow(); return 0;
 
  ray_chastetris();
 

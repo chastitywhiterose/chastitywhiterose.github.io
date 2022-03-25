@@ -11,6 +11,7 @@ The "-r 30" means 30 frames per second. Usually this is what I want but sometime
 
 Useful links:
 
+https://trac.ffmpeg.org/wiki/Slideshow
 https://trac.ffmpeg.org/wiki/Encode/H.264
 https://trac.ffmpeg.org/wiki/Encode/H.265
 https://trac.ffmpeg.org/wiki/Encode/AV1
@@ -19,3 +20,7 @@ https://trac.ffmpeg.org/wiki/Encode/VP9
 https://ffmpeg.org/general.html#Image-Formats
 https://imagemagick.org/script/magick.php
 https://imagemagick.org/script/command-line-options.php#size
+
+example of adding audio to a series of frames
+
+ffmpeg -i music/faded.m4a -r 60 -f image2 -i o/%08d.png -vcodec libx264 -preset veryslow -crf 23 -pix_fmt yuv420p -shortest o/video.mp4
