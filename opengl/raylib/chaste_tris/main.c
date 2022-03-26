@@ -125,7 +125,9 @@ void next_file_input()
 
  if(feof(fp_input))
  {
-  printf("Error: End of file reached.\n");
+  printf("End of file reached.\n");
+  printf("Now use keyboard input.\n");
+
 
   /*
    printf("Going back to beginning\n");
@@ -140,6 +142,8 @@ void next_file_input()
  {
 
   //printf("Character==%c\n",c);
+
+  move_id=c;
 
   if(c=='W'){tetris_move_up();}
   if(c=='S'){tetris_move_down();}
@@ -363,14 +367,14 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
  use moves<frame to make sure that no frames are ever saved
 */
 
- if(moves>=frame)
+ if(moves<frame)
  {
   TakeScreenshot_frame();
  }
  
 
  /*optionally, get input from another file instead of keyboard if I have this enabled.*/
- //next_file_input();
+ next_file_input();
 
 
 
@@ -386,7 +390,7 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
 int main(int argc, char **argv)
 {
  InitWindow(width,height,"Chastity's Game");
- SetTargetFPS(30);
+ SetTargetFPS(60);
 
  texture=LoadTexture("textures/star_face.png");
 
@@ -398,16 +402,21 @@ int main(int argc, char **argv)
  //PlaySound(sound);
 
  /*open the file to record moves*/
- sprintf(filename,"movelog.txt");
+ sprintf(filename,"omovelog.txt");
  fp=fopen(filename,"wb+");
  if(fp==NULL){printf("Failed to create file \"%s\".\n",filename); return 1;}
 
- sprintf(filename,"t.txt");
+ sprintf(filename,"imovelog.txt");
  fp_input=fopen(filename,"rb+");
- if(fp_input==NULL){printf("Failed to open input file \"%s\".\n",filename); }
+ if(fp_input==NULL)
+ {
+  printf("Failed to open input file \"%s\".\n",filename);
+  printf("This is not an error. It just means input is keyboard only. \"%s\".\n",filename);
+ }
  else
  {
   printf("input file \"%s\" is opened.\n",filename);
+  printf("Will read commands from this file before keyboard. \"%s\".\n",filename);
  }
 
 /*before the game actually runs, optionally display a start screen*/
