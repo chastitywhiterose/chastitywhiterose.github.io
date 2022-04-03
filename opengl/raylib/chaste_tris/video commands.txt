@@ -24,3 +24,7 @@ https://imagemagick.org/script/command-line-options.php#size
 example of adding audio to a series of frames
 
 ffmpeg -i music/faded.m4a -r 60 -f image2 -i o/%08d.png -vcodec libx264 -preset veryslow -crf 23 -pix_fmt yuv420p -shortest o/video.mp4
+
+60 fps is usually best for chaste tris videos
+
+ffmpeg -r 60 -f image2 -i o/%08d.png -vcodec libx264 -preset veryslow -crf 23 -pix_fmt yuv420p o/video.mp4
