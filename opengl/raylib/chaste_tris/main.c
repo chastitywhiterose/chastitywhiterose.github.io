@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <raylib.h>
-
-
 
 const int width = 1280;
 const int height = 720;
@@ -12,6 +11,8 @@ Color ray_block_color={255,255,255,255};
 Texture2D texture; /*used when textures are used*/
 Sound sound; /*main sound played*/
 Sound sound1; /*others sounds played*/
+
+int radius; //used for circles sometimes
 
 FILE *fp; /*to save a file of moves played*/
 char filename[256]; /*name of move log file*/
@@ -23,7 +24,7 @@ int frame=0,framelimit=1,fps=60;
 char gamename[256];
 int blocks_used=7;
 
-char text[256];
+char text[0x200];
 char movetext[256],move_id;
 int fontsize=60;
 
@@ -127,20 +128,16 @@ void next_file_input()
  {
   printf("End of file reached.\n");
   printf("Now use keyboard input.\n");
-
-
   /*
    printf("Going back to beginning\n");
    fseek(fp_input,0,SEEK_SET);
   */
 
   fclose(fp_input); fp_input=NULL;  return;
-
  }
 
  else
  {
-
   //printf("Character==%c\n",c);
 
   move_id=c;
@@ -153,10 +150,20 @@ void next_file_input()
   if(c=='Z'){block_rotate_left_basic();}
   if(c=='X'){block_rotate_right_basic();}
   if(c=='C'){block_hold();}
-
  }
 
+
+ /*the following code is meant to be used for longboi mode in combination with a special input file*/
+ /*move backwards to the right spot for infinite loop of longbois*/
+ 
+ /*
+  c=ftell(fp_input);
+  if(c==604){fseek(fp_input,512,SEEK_SET);}
+ */
+
 }
+
+
 
 
 /*
@@ -166,24 +173,13 @@ void ray_chastetris()
 {
  int pixel,r,g,b;
  int x=0,y=0;
- int *p=tetris_grid;
+ //int *p=main_grid.array;
 
  int block_size=height/grid_height;
- int grid_offset_x=block_size; /*how far from the left size of the window the grid display is*/
+ int grid_offset_x=block_size*1; /*how far from the left size of the window the grid display is*/
 
- int radius=block_size/2; //radius of circle if drawing circles instead of squares for the blocks.
+ radius=block_size/2; //radius of circle if drawing circles instead of squares for the blocks.
 
- if(blocks_used==1)
- { 
-  sprintf(gamename,"Long Boi");
- }
- else
- {
-  sprintf(gamename,"Chaste Tris");
- }
-
- next_block_x=(grid_width-current_block_width)/2;
- next_block_y=0;
 
  printf("block_size==%d\n",block_size);
 
@@ -199,13 +195,12 @@ void ray_chastetris()
   x=0;
   while(x<grid_width)
   {
-   p[x+y*grid_width]=empty_color;
+   main_grid.array[x+y*grid_width]=empty_color;
    x+=1;
   }
   y+=1;
  }
 
-  block_x=next_block_x;block_y=next_block_y;
  
   /* Loop until the user closes the window */
 
@@ -216,82 +211,53 @@ while(!WindowShouldClose())
   ClearBackground((Color){0,0,0,255});
 
  /*make backup of entire grid*/
- y=0;
- while(y<grid_height)
- {
-  x=0;
-  while(x<grid_width)
-  {
-   tetris_grid_backup[x+y*grid_width]=p[x+y*grid_width];
-   x+=1;
-  }
-  y+=1;
- }
+  temp_grid=main_grid;
 
-  /*draw block onto grid at it's current location*/
-  by=0;
-  while(by<4)
+  /*draw block onto temp grid at it's current location*/
+  y=0;
+  while(y<max_block_width)
   {
-   bx=0;
-   while(bx<4)
+   x=0;
+   while(x<max_block_width)
    {
-    if(main_block_array[bx+by*4]!=0)
+    if(main_block.array[x+y*max_block_width]!=0)
     {
-     if( p[block_x+bx+(block_y+by)*grid_width]!=0 )
+     if( temp_grid.array[main_block.x+x+(main_block.y+y)*grid_width]!=0 )
      {
       printf("Error: Block in Way\n");
 
-      /*because a collision has occurred. We restore everything back to the way it was before block was moved.*/
+      /*because a collision has occurred. We will restore everything back to the way it was before block was moved.*/
 
-      /*restore backup of block location*/
-      block_x=block_x1,block_y=block_y1;
-
-     /*Restore backup of entire grid*/
-     y=0;
-     while(y<grid_height)
-     {
-      x=0;
-      while(x<grid_width)
-      {
-       p[x+y*grid_width]=tetris_grid_backup[x+y*grid_width];
-       x+=1;
-      }
-      y+=1;
+      break;
      }
-
-      break;}
      else
      {
-      p[block_x+bx+(block_y+by)*grid_width]=block_color;
+      temp_grid.array[main_block.x+x+(main_block.y+y)*grid_width]=main_block.color;
      }
     }
-    bx+=1;
+    x+=1;
    }
-   by+=1;
+   y+=1;
   }
-
 
 
 
 /*display the tetris grid*/
 
-
-
  y=0;
  while(y<grid_height)
  {
   x=0;
   while(x<grid_width)
   {
-
-   pixel=p[x+y*grid_width];
+   pixel=temp_grid.array[x+y*grid_width];
    r=(pixel&0xFF0000)>>16;
    g=(pixel&0x00FF00)>>8;
    b=(pixel&0x0000FF);
 
- 
-/* printf("x=%d y=%d ",x,y);
-   printf("red=%d green=%d blue=%d\n",r,g,b);
+/*
+ printf("x=%d y=%d ",x,y);
+ printf("red=%d green=%d blue=%d\n",r,g,b);
 */
 
 ray_block_color=(Color){r,g,b,255};
@@ -303,37 +269,23 @@ DrawRectangle(grid_offset_x+x*block_size,y*block_size,block_size,block_size,ray_
 /*draw texture modified by the color of this block on the grid*/
 //DrawTexture(texture, grid_offset_x+x*block_size,y*block_size , ray_block_color);
 
-
-
    x+=1;
   }
   y+=1;
  }
-
-
- /*end of drawing code for grid*/
-
-
- /*Restore backup of entire grid*/
- y=0;
- while(y<grid_height)
- {
-  x=0;
-  while(x<grid_width)
-  {
-   p[x+y*grid_width]=tetris_grid_backup[x+y*grid_width];
-   x+=1;
-  }
-  y+=1;
- }
-
-  /*printf("last_move_spin==%d\n",last_move_spin);*/
 
 
  /*draw the boundary walls*/
 
-DrawRectangle(0*block_size,0*block_size,block_size,height,(Color){255,255,255,255});
+DrawRectangle(grid_offset_x-block_size,0*block_size,block_size,height,(Color){255,255,255,255});
 DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height,(Color){255,255,255,255});
+
+ /*end of drawing code for grid*/
+
+
+/*printf("last_move_spin==%d\n",last_move_spin);*/
+
+
 
 /*some text drawing*/
  
@@ -341,10 +293,11 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
   DrawText(gamename,fontsize*8,0,fontsize*2, (Color){255,255,255,255});
 
 
-  /*DrawText(movetext,fontsize*14,height-fontsize*6,fontsize, (Color){255,255,255,255});*/
+  //DrawText(movetext,fontsize*14,height-fontsize*6,fontsize, (Color){255,255,255,255});
 
 
-  DrawText("Chastity White Rose",fontsize*8,fontsize*9,fontsize, (Color){255,255,255,255});
+
+  DrawText("Chastity White Rose",fontsize*8,fontsize*10,fontsize, (Color){255,255,255,255});
   DrawText("River Black Rose",fontsize*8,fontsize*11,fontsize, (Color){255,255,255,255});
 
   sprintf(text,"Score: %d",score);
@@ -353,11 +306,17 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
   sprintf(text,"Lines: %d",lines_cleared_total);
   DrawText(text,fontsize*8,fontsize*4,fontsize, (Color){255,255,255,255});
 
-  sprintf(text,"This: %c",current_block_id);
+  sprintf(text,"This: %c",main_block.id);
   DrawText(text,fontsize*8,fontsize*5,fontsize, (Color){255,255,255,255});
 
-  sprintf(text,"Hold: %c",hold_block_id);
+  sprintf(text,"Hold: %c",hold_block.id);
   DrawText(text,fontsize*8,fontsize*6,fontsize, (Color){255,255,255,255});
+
+  sprintf(text,"Move: %d",moves);
+  DrawText(text,fontsize*8,fontsize*7,fontsize, (Color){255,255,255,255});
+
+  sprintf(text,"Back to Back: %d",back_to_back);
+  DrawText(text,fontsize*8,fontsize*8,fontsize, (Color){255,255,255,255});
 
   /*DrawTexture(texture, width/2 - texture.width/2, height/2 - texture.height/2, WHITE);*/
 
@@ -391,15 +350,31 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
 
 int main(int argc, char **argv)
 {
+
+ /*process command line arguments*/
+ int x=1;
+ while(x<argc)
+ {
+  printf("argv[%i]=%s\n",x,argv[x]);
+
+  if(strcmp(argv[x],"-longboi")==0)
+  {
+   printf("Long Boi mode activated! Only the I blocks will spawn!\n");
+   blocks_used=1;
+  }
+ 
+  x++;
+ }
+
  InitWindow(width,height,"Chastity's Game");
  SetTargetFPS(60);
 
- texture=LoadTexture("textures/star_face.png");
+ //texture=LoadTexture("textures/star_face.png");
 
  InitAudioDevice();      // Initialize audio device
 
- sound = LoadSound("./audio/respectfully.mp3"); //load the audio
- sound1 = LoadSound("./audio/deluxe_spa_package.mp3"); //load the audio
+ //sound = LoadSound("./audio/respectfully.mp3"); //load the audio
+ //sound1 = LoadSound("./audio/deluxe_spa_package.mp3"); //load the audio
 
  //PlaySound(sound);
 
@@ -421,6 +396,17 @@ int main(int argc, char **argv)
   printf("Will read commands from this file before keyboard. \"%s\".\n",filename);
  }
 
+ /*the name of the game depends on the blocks_used variable*/
+ if(blocks_used==1)
+ { 
+  sprintf(gamename,"Long Boi");
+ }
+ else
+ {
+  sprintf(gamename,"Chaste Tris");
+ }
+
+
 /*before the game actually runs, optionally display a start screen*/
 while(!WindowShouldClose()) /*loop runs until key pressed*/
 {
@@ -429,8 +415,18 @@ while(!WindowShouldClose()) /*loop runs until key pressed*/
 
  ClearBackground((Color){0,0,0,255});
 
- DrawText("Welcome to Chaste Tris",fontsize*4,fontsize*4,fontsize, (Color){255,255,255,255});
- DrawText("Press Enter to Begin game.",fontsize*4,fontsize*5,fontsize, (Color){255,255,255,255});
+ sprintf(text,"Welcome to %s",gamename);
+ DrawText(text,fontsize*2,fontsize*0,fontsize, (Color){255,255,255,255});
+
+ DrawText("Programming: Chastity White Rose",fontsize*2,fontsize*2,fontsize, (Color){255,255,255,255});
+ DrawText("Inspiration: River Black Rose",fontsize*2,fontsize*3,fontsize, (Color){255,255,255,255});
+
+ DrawText("Press Enter to Begin game.",fontsize*2,fontsize*5,fontsize, (Color){255,255,255,255});
+
+ DrawText("https://github.com/chastitywhiterose/chastetris",fontsize*2,fontsize*8,40, (Color){255,255,255,255});
+
+ DrawText("Email: chastitywhiterose@gmail.com",fontsize*2,fontsize*9,40, (Color){255,255,255,255});
+
 
  EndDrawing();
 }
@@ -439,11 +435,11 @@ while(!WindowShouldClose()) /*loop runs until key pressed*/
 
  ray_chastetris();
 
- fclose(fp); /*close the file*/
-
+ if(fp!=NULL){fclose(fp);}
  if(fp_input!=NULL){fclose(fp_input);}
 
- UnloadSound(sound);     // Unload sound data
+ //UnloadSound(sound);     // Unload sound data
+ //UnloadSound(sound1);     // Unload sound data
 
  return 0;
 }
