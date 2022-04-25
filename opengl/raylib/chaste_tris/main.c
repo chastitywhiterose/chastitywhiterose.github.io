@@ -173,47 +173,6 @@ void next_file_input()
 }
 
 
-/*
-this function draws the stats of the game such as the lines and score using the built in raylib font
-it's in a separate function so that I can switch it out with another function when I feel like it
-*/
-void draw_stats()
-{
-
-/*some text drawing*/
- 
-
-  DrawText(gamename,text_x,0,fontsize*2, (Color){255,255,255,255});
-
-
-  //DrawText(movetext,fontsize*14,height-fontsize*6,fontsize, (Color){255,255,255,255});
-
-
-
-  DrawText("Chastity White Rose",text_x,fontsize*10,fontsize, (Color){255,255,255,255});
-  DrawText("River Black Rose",text_x,fontsize*11,fontsize, (Color){255,255,255,255});
-
-  sprintf(text,"Score: %d",score);
-  DrawText(text,text_x,fontsize*3,fontsize, (Color){255,255,255,255});
-
-  sprintf(text,"Lines: %d",lines_cleared_total);
-  DrawText(text,text_x,fontsize*4,fontsize, (Color){255,255,255,255});
-
-  sprintf(text,"This: %c",main_block.id);
-  DrawText(text,text_x,fontsize*5,fontsize, (Color){255,255,255,255});
-
-  sprintf(text,"Hold: %c",hold_block.id);
-  DrawText(text,text_x,fontsize*6,fontsize, (Color){255,255,255,255});
-
-  sprintf(text,"Move: %d",moves);
-  DrawText(text,text_x,fontsize*7,fontsize, (Color){255,255,255,255});
-
-  sprintf(text,"Back to Back: %d",back_to_back);
-  DrawText(text,text_x,fontsize*8,fontsize, (Color){255,255,255,255});
-
-  /*DrawTexture(texture, width/2 - texture.width/2, height/2 - texture.height/2, WHITE);*/
-
-}
 
 
 /*
@@ -403,59 +362,6 @@ DrawRectangle(grid_offset_x+grid_width*block_size,0*block_size,block_size,height
 }
 
 
-void welcome_screen()
-{
-
-/*load a font before any text is drawn*/
-
-//font = LoadFont("./font/Hack-Regular.ttf");
-
-fontsize=height/12; /*customize font size based on screen height*/
-text_x=fontsize*1; /*position of text for intro screen*/
-
-/*before the game actually runs, optionally display a start screen*/
-while(!WindowShouldClose()) /*loop runs until key pressed*/
-{
- if(IsKeyPressed(KEY_ENTER)){break;}
- BeginDrawing();
-
- ClearBackground((Color){0,0,0,255});
-
- sprintf(text,"Welcome to %s",gamename);
- DrawText(text,text_x,fontsize*0,fontsize, (Color){255,255,255,255});
-
-
- DrawText("Programming: Chastity White Rose",text_x,fontsize*2,fontsize, (Color){255,255,255,255});
- DrawText("Inspiration: River Black Rose",text_x,fontsize*3,fontsize, (Color){255,255,255,255});
-
- DrawText("Press Enter to Begin game.",text_x,fontsize*5,fontsize, (Color){255,255,255,255});
-
- DrawText("https://github.com/chastitywhiterose/chastetris",text_x,fontsize*8,40, (Color){255,255,255,255});
-
- DrawText("Email: chastitywhiterose@gmail.com",text_x,fontsize*9,40, (Color){255,255,255,255});
-
- EndDrawing();
-}
-
-}
-
-/* this function is meant to load fonts from images and display them as a welcome screen*/
-void welcome_screen_chaste_font_hello()
-{
-
-/*before the game actually runs, optionally display a start screen*/
-while(!WindowShouldClose()) /*loop runs until key pressed*/
-{
- if(IsKeyPressed(KEY_ENTER)){break;}
- BeginDrawing();
- ClearBackground((Color){255,0,0,255});
- chaste_font_draw_string("Hello World!\nI am:\n\nChastity\nWhite\nRose",100,100);
- EndDrawing();
-}
-
-}
-
-
 
 /* this function is now the official welcome screen*/
 void welcome_screen_chaste_font()
@@ -498,7 +404,7 @@ while(!WindowShouldClose()) /*loop runs until key pressed*/
 
  main_font=font_8;
 
- sprintf(text,"All physics code in this game was written by Chastity White Rose using the C Programming Language.\nRaylib is used for the graphics API including rectanges and textures.\nThe font handling is done with Chastity's own font library she wrote and named Chaste Font.\nCredit goes to Alexey Pajitnov for creating the original Tetris game which Chaste Tris is based on.");
+ sprintf(text,"All physics code in this game was written by Chastity White Rose using the C Programming Language.\nRaylib is used for the graphics API including rectangles and textures.\nThe font handling is done with the font library Chastity wrote and named Chaste Font.\nCredit goes to Alexey Pajitnov for creating the original Tetris game which Chaste Tris is based on.");
  chaste_font_draw_string(text,text_x,main_font.char_height*52);
 
 
@@ -557,16 +463,22 @@ int main(int argc, char **argv)
   it returns a "chaste_font" structure which is stored in global variable main_font
  */
 
+
  font_8=chaste_font_load("./font/bitmap/FreeBASIC Font 8.png");
  font_16=chaste_font_load("./font/bitmap/FreeBASIC Font 16.png");
  font_32=chaste_font_load("./font/bitmap/FreeBASIC Font 32.png");
  font_64=chaste_font_load("./font/bitmap/FreeBASIC Font 64.png");
- //font_128=chaste_font_load("./font/bitmap/FreeBASIC Font 128.png");
+
+/*
+ font_8=chaste_font_load("./font/bitmap/Tetris Font 8.png");
+ font_16=chaste_font_load("./font/bitmap/Tetris Font 16.png");
+ font_32=chaste_font_load("./font/bitmap/Tetris Font 32.png");
+ font_64=chaste_font_load("./font/bitmap/Tetris Font 64.png");
+*/
 
 
 
 
-//welcome_screen();
 
 welcome_screen_chaste_font();
 
@@ -578,7 +490,6 @@ this is great when testing something that hasn't been debugged
  //CloseWindow(); return 0;
 
 text_x=fontsize*8; /*position of text for game loop*/
-
 
 
  /*open the file to record moves*/
